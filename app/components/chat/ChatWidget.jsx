@@ -22,7 +22,7 @@ export default function ChatWidget({ embedded = false, org }) {
     }, [embedded]);
 
     // Fetch Org Info
-    const [orgName, setOrgName] = useState("AI Chatbot");
+    // const [orgName, setOrgName] = useState("AI Chatbot");
 
     useEffect(() => {
         if (!org) return;
@@ -35,7 +35,7 @@ export default function ChatWidget({ embedded = false, org }) {
                 const res = await fetch(`${baseUrl}/public/org/${org}`);
                 if (res.ok) {
                     const data = await res.json();
-                    setOrgName(data.name);
+                    // setOrgName(data.name);
                     setMessages(prev => {
                         if (prev[0]?.id === 'welcome') {
                             return [{ ...prev[0], text: data.welcome_message }];

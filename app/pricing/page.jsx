@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAuth } from '../hooks/useAuth'; // Adjust import if needed
 import { useRouter } from 'next/navigation';
 
 export default function PricingPage() {
-    const { user, refreshUser } = useAuth(); // Assuming useAuth provides current user and refresh capability
+    const { user } = useAuth(); // Assuming useAuth provides current user and refresh capability
     const router = useRouter();
 
     // Plans configuration mirroring backend
@@ -48,7 +48,7 @@ export default function PricingPage() {
         <div className="container py-5">
             <div className="text-center mb-5">
                 <h1 className="display-4 fw-bold">Simple, Transparent Pricing</h1>
-                <p className="lead text-muted">Choose the plan that fits your organization's needs.</p>
+                <p className="lead text-muted">Choose the plan that fits your organization&apos;s needs.</p>
             </div>
 
             <div className="row row-cols-1 row-cols-md-3 mb-3 text-center">

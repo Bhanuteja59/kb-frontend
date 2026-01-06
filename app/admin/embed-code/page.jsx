@@ -107,7 +107,7 @@ export default function EmbedCodePage() {
                                 Copy the embed code above
                             </li>
                             <li>
-                                Paste it into your website's HTML, just before the closing <code>&lt;/body&gt;</code> tag
+                                Paste it into your website&apos;s HTML, just before the closing <code>&lt;/body&gt;</code> tag
                             </li>
                             <li>
                                 The chatbot widget will appear in the bottom-right corner of your website
@@ -139,7 +139,7 @@ export default function EmbedCodePage() {
                         <h4 style={{ marginTop: 0, color: "#92400e" }}>💡 Tips</h4>
                         <ul style={{ marginBottom: 0, color: "#78350f" }}>
                             <li>Upload documents in the Documents section to populate the knowledge base</li>
-                            <li>The chatbot will automatically use your organization's documents to answer questions</li>
+                            <li>The chatbot will automatically use your organization&apos;s documents to answer questions</li>
                             <li>You can customize the widget appearance by modifying the widget.js file</li>
                         </ul>
                     </div>

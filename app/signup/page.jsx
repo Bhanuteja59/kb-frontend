@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import Topbar from "../components/layout/Topbar";
 import { signup } from "../lib/api";
 import { setToken } from "../lib/utils/token";
@@ -159,7 +160,7 @@ export default function SignupPage() {
                                 boxSizing: 'border-box'
                             }}
                         >
-                            <img src="https://www.google.com/favicon.ico" alt="Google" width="16" height="16" />
+                            <Image src="https://www.google.com/favicon.ico" alt="Google" width={16} height={16} />
                             Sign up with Google
                         </a>
                     </div>

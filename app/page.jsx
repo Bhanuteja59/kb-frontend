@@ -7,16 +7,15 @@ import Link from "next/link";
 
 export default function Home() {
     const [me, setMe] = useState(null);
-    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         apiFetch("/auth/me")
             .then(r => r.json())
             .then(u => {
                 setMe(u);
-                setLoading(false);
             })
-            .catch(() => setLoading(false));
+            .catch(() => { });
     }, []);
 
     return (
@@ -93,12 +92,11 @@ export default function Home() {
                     </div>
                 )}
 
-                {/* MISSION SECTION */}
                 <div style={{ padding: "80px 0", textAlign: "center" }}>
                     <h2 className="section-title">Turn Information into Intelligence</h2>
                     <p className="hero-subtitle" style={{ fontSize: "1.1rem" }}>
                         Our goal is simple: <b>Eliminate the chaos of scattered documents.</b><br />
-                        We provide a centralized, secure platform where your organization's knowledge lives, breathes, and answers questions instantly.
+                        We provide a centralized, secure platform where your organization&apos;s knowledge lives, breathes, and answers questions instantly.
                     </p>
                 </div>
 

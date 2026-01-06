@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Topbar from "../components/layout/Topbar";
 import { apiFetch } from "../lib/api";
 import Link from "next/link";
@@ -10,16 +10,16 @@ export default function DocumentsPage() {
     const [q, setQ] = useState("");
     const [showDeleted, setShowDeleted] = useState(false);
 
-    async function load() {
+    const load = useCallback(async () => {
         const meRes = await apiFetch("/auth/me");
         const meData = await meRes.json();
         setMe(meData);
         const url = meData.role === "user" ? "/documents" : `/documents?include_deleted=${showDeleted ? "true" : "false"}`;
         const r = await apiFetch(url);
         setDocs(await r.json());
-    }
+    }, [showDeleted]);
 
-    useEffect(() => { load().catch(() => { }); }, [showDeleted]);
+    useEffect(() => { load().catch(() => { }); }, [load]);
 
     const filtered = useMemo(() => {
         const qq = q.trim().toLowerCase();

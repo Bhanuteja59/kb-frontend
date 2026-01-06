@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Topbar from "../../components/layout/Topbar";
 import { apiFetch } from "../../lib/api";
 
@@ -9,14 +9,14 @@ export default function AuditPage() {
     const [action, setAction] = useState("");
     const [err, setErr] = useState(null);
 
-    async function load() {
+    const load = useCallback(async () => {
         const params = new URLSearchParams();
         if (action) params.set("action", action);
         const r = await apiFetch(`/audit?${params.toString()}`);
         setEvents(await r.json());
-    }
+    }, [action]);
 
-    useEffect(() => { load().catch(e => setErr(e.message)); }, [action]);
+    useEffect(() => { load().catch(e => setErr(e.message)); }, [load]);
 
     const filtered = useMemo(() => {
         const qq = q.trim().toLowerCase();

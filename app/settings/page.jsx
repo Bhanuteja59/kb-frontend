@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import Topbar from "../components/layout/Topbar";
 import { getMe } from "../lib/api";
-import { API_BASE } from "../lib/constants";
 
 export default function SettingsPage() {
     const [user, setUser] = useState(null);

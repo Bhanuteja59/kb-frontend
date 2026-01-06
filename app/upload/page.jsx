@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Topbar from "../components/layout/Topbar";
-import { uploadDocument, uploadFromDrive } from "../lib/api";
+import { uploadFromDrive } from "../lib/api";
 import DrivePicker from "../components/documents/DrivePicker";
 import { API_BASE } from "../lib/constants";
 
