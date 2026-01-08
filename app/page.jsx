@@ -208,7 +208,9 @@ export default function Home() {
                     </div>
                 </div>
 
-                <ChatWidget />
+                {me && (
+                    <ChatWidget org={me.org_slug || me.org_id} />
+                )}
             </div>
         </>
     );

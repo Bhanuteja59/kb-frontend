@@ -45,7 +45,7 @@ export default function Topbar() {
 
                     {(isAdmin || isManager) && (
                         <Link href="/settings" className="muted">
-                            Settings
+                            Integration
                         </Link>
                     )}
 

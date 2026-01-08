@@ -13,13 +13,5 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-markdown": "^10.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.30",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "eslint": "^9.16.0",
-    "eslint-config-next": "15.1.0",
-    "typescript": "^5.7.2"
   }
 }

@@ -1,22 +1,8 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { getMe } from "../lib/api";
+import { useAuthContext } from "../context/AuthContext";
 
 export function useAuth() {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        getMe()
-            .then(setUser)
-            .catch((err) => {
-                setError(err.message);
-                setUser(null);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+    const { user, loading, error, refresh } = useAuthContext();
 
     const isAdmin = user?.role === "admin";
     const isManager = user?.role === "manager";
@@ -29,5 +15,6 @@ export function useAuth() {
         isAdmin,
         isManager,
         isUser,
+        refresh
     };
 }

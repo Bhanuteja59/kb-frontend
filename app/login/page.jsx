@@ -73,6 +73,9 @@ export default function LoginPage() {
                                 <a href="/signup" style={{ textDecoration: 'none', color: 'inherit' }}>Create account</a>
                             </span>
                         </div>
+                        <div style={{ marginTop: 15, textAlign: 'center' }}>
+                            <a href="/forgot-password" style={{ color: '#666', fontSize: '0.9rem', textDecoration: 'none' }}>Forgot Password?</a>
+                        </div>
                     </form>
                     <div style={{ marginTop: 20 }}>
                         <div style={{

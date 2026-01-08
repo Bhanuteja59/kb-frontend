@@ -4,7 +4,7 @@
 export { apiFetch } from "./client";
 
 // Auth  
-export { login, signup, getMe, completeOnboarding } from "./auth";
+export { login, signup, getMe, completeOnboarding, updateProfile, updateOrganization, sendVerification, verifyOtp, forgotPassword, resetPassword, changePassword } from "./auth";
 
 // Chat
 export { ragChat } from "./chat";

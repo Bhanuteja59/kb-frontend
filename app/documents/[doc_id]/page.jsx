@@ -1,17 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Topbar from "../../components/layout/Topbar";
 import { apiFetch } from "../../lib/api";
 import Link from "next/link";
 
 export default function DocDetails({ params }) {
+    const { doc_id } = use(params);
     const [data, setData] = useState(null);
     const [err, setErr] = useState(null);
     const [selected, setSelected] = useState(0);
 
     useEffect(() => {
-        apiFetch(`/documents/${params.doc_id}`).then(r => r.json()).then(setData).catch(e => setErr(e.message));
-    }, [params.doc_id]);
+        apiFetch(`/documents/${doc_id}`).then(r => r.json()).then(setData).catch(e => setErr(e.message));
+    }, [doc_id]);
 
     return (
         <>

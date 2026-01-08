@@ -22,29 +22,36 @@ export default function ChatWidget({ embedded = false, org }) {
     }, [embedded]);
 
     // Fetch Org Info
-    // const [orgName, setOrgName] = useState("AI Chatbot");
+    const [orgName, setOrgName] = useState("AI Chatbot");
+    const [isValid, setIsValid] = useState(null); // null = checking, true = valid, false = invalid
 
     useEffect(() => {
-        if (!org) return;
+        if (!org) {
+            setIsValid(false);
+            return;
+        }
 
         async function fetchOrgInfo() {
             try {
-                // Assuming base URL is available via env or local relative path if on same domain
-                // For embedded widget cross-origin, we likely need full URL from NEXT_PUBLIC_API_BASE_URL
                 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
                 const res = await fetch(`${baseUrl}/public/org/${org}`);
                 if (res.ok) {
                     const data = await res.json();
-                    // setOrgName(data.name);
+                    setOrgName(data.name);
                     setMessages(prev => {
                         if (prev[0]?.id === 'welcome') {
                             return [{ ...prev[0], text: data.welcome_message }];
                         }
                         return prev;
                     });
+                    setIsValid(true);
+                } else {
+                    console.warn("Invalid Org ID");
+                    setIsValid(false);
                 }
             } catch (err) {
-                console.error("Failed to fetch org info:", err);
+                console.warn("Failed to fetch org info:", err);
+                setIsValid(false);
             }
         }
         fetchOrgInfo();
@@ -63,6 +70,8 @@ export default function ChatWidget({ embedded = false, org }) {
         textareaRef.current.style.height =
             Math.min(textareaRef.current.scrollHeight, 120) + "px";
     }, [input]);
+
+
 
     const canSend = useMemo(
         () => input.trim().length > 0 && !loading,
@@ -103,6 +112,36 @@ export default function ChatWidget({ embedded = false, org }) {
         }
     }
 
+    // VALIDATION GUARD
+    if (isValid === false) {
+        if (embedded) {
+            return (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100vh',
+                    backgroundColor: '#f8fafc',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                    color: '#1e293b',
+                    padding: '20px',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ fontSize: '48px', marginBottom: '16px' }}>🚫</div>
+                    <h2 style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>Bot Unavailable</h2>
+                    <p style={{ fontSize: '16px', color: '#64748b', maxWidth: '400px', lineHeight: '1.5' }}>
+                        The Organization ID provided <code>({org})</code> is invalid or active access credentials are missing.
+                    </p>
+                    <div style={{ marginTop: '24px', padding: '12px 20px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', color: '#64748b' }}>
+                        Please verify your <strong>data-org-id</strong> configuration.
+                    </div>
+                </div>
+            );
+        }
+        return null; // Hide toggle button if invalid
+    }
+
     return (
         <>
             {/* CHAT WINDOW */}
@@ -111,7 +150,7 @@ export default function ChatWidget({ embedded = false, org }) {
                     {/* HEADER */}
                     <div className="chat-header">
                         <div>
-                            <strong>AI Chatbot </strong>
+                            <strong>{orgName} </strong>
                             <div className="status">● Online</div>
                         </div>
                         {!embedded && (
