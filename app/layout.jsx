@@ -9,6 +9,7 @@ export const metadata = {
 import { AuthProvider } from "./context/AuthContext";
 import WakeUpBackend from "./components/layout/WakeUpBackend";
 
+import { Suspense } from "react";
 import GlobalLoader from "./components/layout/GlobalLoader";
 
 export default function RootLayout({ children }) {
@@ -19,7 +20,9 @@ export default function RootLayout({ children }) {
             </head>
             <body>
                 <AuthProvider>
-                    <GlobalLoader />
+                    <Suspense fallback={null}>
+                        <GlobalLoader />
+                    </Suspense>
                     <WakeUpBackend />
                     {children}
                 </AuthProvider>
