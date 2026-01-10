@@ -20,6 +20,20 @@
     pointer-events: auto;
 }
 
+.chat-window.embedded-mode {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    z-index: 1;
+    filter: none;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+}
+
 /* CARD */
 .chat-card {
     height: 100%;

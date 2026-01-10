@@ -52,80 +52,94 @@ function ResetPasswordForm() {
 
     if (!token) {
         return (
-            <div className="container" style={{ marginTop: 50, textAlign: "center" }}>
-                <p style={{ color: "red" }}>Invalid Link. Please request a new password reset.</p>
-                <div style={{ marginTop: 20 }}>
-                    <Link href="/forgot-password" style={{ textDecoration: 'none', color: '#666', fontSize: '0.9rem' }}>Plese request a new link here</Link>
+            <div className="container min-vh-80 d-flex align-items-center justify-content-center py-5">
+                <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 450 }}>
+                    <div className="card-body p-4 text-center">
+                        <div className="alert alert-danger mb-4">
+                            <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                            Invalid Link. Please request a new password reset.
+                        </div>
+                        <Link href="/forgot-password" className="btn btn-outline-secondary">
+                            Request a new link here
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="card" style={{ maxWidth: 450, width: "100%", padding: "2rem" }}>
-                <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-                    <h1 style={{ marginTop: 0, fontSize: "1.8rem" }}>Set New Password</h1>
-                    <p className="muted">Enter your new password below.</p>
-                </div>
-
-                {status === "success" ? (
-                    <div style={{ textAlign: "center" }}>
-                        <div style={{ color: "green", marginBottom: 20 }}>Password Reset Successful! Redirecting...</div>
+        <div className="container d-flex align-items-center justify-content-center min-vh-80 py-5">
+            <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 450 }}>
+                <div className="card-body p-4 p-md-5">
+                    <div className="text-center mb-4">
+                        <h1 className="h3 mb-2">Set New Password</h1>
+                        <p className="text-muted">Enter your new password below.</p>
                     </div>
-                ) : (
-                    <form onSubmit={onSubmit}>
-                        <div style={{ marginTop: 15 }}>
-                            <label>New Password</label>
-                            <div style={{ position: "relative" }}>
-                                <input
-                                    className="input"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    minLength={8}
-                                    style={{ paddingRight: 50 }}
-                                    autoFocus
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    style={{
-                                        position: "absolute",
-                                        right: 10,
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                        border: "none",
-                                        background: "none",
-                                        cursor: "pointer",
-                                        color: "#666",
-                                    }}
-                                >
-                                    {showPassword ? "Hide" : "Show"}
-                                </button>
+
+                    {status === "success" ? (
+                        <div className="text-center">
+                            <div className="alert alert-success mb-3" role="alert">
+                                <i className="bi bi-check-circle-fill me-2"></i>
+                                Password Reset Successful! Redirecting...
                             </div>
                         </div>
+                    ) : (
+                        <form onSubmit={onSubmit}>
+                            <div className="mb-3">
+                                <label className="form-label">New Password</label>
+                                <div className="input-group">
+                                    <input
+                                        className="form-control"
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        minLength={8}
+                                        autoFocus
+                                    />
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
+                                    </button>
+                                </div>
+                            </div>
 
-                        <div style={{ marginTop: 15 }}>
-                            <label>Confirm Password</label>
-                            <input
-                                className="input"
-                                type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                required
-                                minLength={8}
-                            />
-                        </div>
+                            <div className="mb-4">
+                                <label className="form-label">Confirm Password</label>
+                                <input
+                                    className="form-control"
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                    minLength={8}
+                                />
+                            </div>
 
-                        {status === "error" && <p style={{ color: "#b91c1c", marginTop: 15 }}>{msg}</p>}
+                            {status === "error" && (
+                                <div className="alert alert-danger mb-3" role="alert">
+                                    {msg}
+                                </div>
+                            )}
 
-                        <button className="btn" disabled={status === "loading"} style={{ width: "100%", marginTop: 25 }}>
-                            {status === "loading" ? "Resetting..." : "Reset Password"}
-                        </button>
-                    </form>
-                )}
+                            <button
+                                className="btn btn-primary w-100"
+                                disabled={status === "loading"}
+                            >
+                                {status === "loading" ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Resetting...
+                                    </>
+                                ) : "Reset Password"}
+                            </button>
+                        </form>
+                    )}
+                </div>
             </div>
         </div>
     );

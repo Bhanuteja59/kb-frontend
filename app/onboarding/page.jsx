@@ -52,41 +52,58 @@ function OnboardingContent() {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <div className="card" style={{ maxWidth: 520 }}>
-                    <h1 style={{ marginTop: 0 }}>Welcome, {name}!</h1>
-                    <p className="muted">Please finish setting up your account.</p>
+            <div className="container d-flex align-items-center justify-content-center min-vh-80 py-5">
+                <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 520 }}>
+                    <div className="card-body p-4 p-md-5">
+                        <div className="text-center mb-4">
+                            <h1 className="h2 mb-2">Welcome, {name}!</h1>
+                            <p className="text-muted">Please finish setting up your account.</p>
+                        </div>
 
-                    <form onSubmit={onSubmit}>
-                        <label>Organization Name</label>
-                        <input
-                            className="input"
-                            value={orgName}
-                            onChange={(e) => setOrgName(e.target.value)}
-                            placeholder="e.g. My Company"
-                            required
-                        />
-                        <div style={{ height: 10 }} />
+                        <form onSubmit={onSubmit}>
+                            <div className="mb-3">
+                                <label className="form-label">Organization Name</label>
+                                <input
+                                    className="form-control"
+                                    value={orgName}
+                                    onChange={(e) => setOrgName(e.target.value)}
+                                    placeholder="e.g. My Company"
+                                    required
+                                />
+                            </div>
 
-                        <label>Role</label>
-                        <select
-                            className="input"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            style={{ background: 'white' }}
-                        >
-                            <option value="user">User</option>
-                            <option value="manager">Manager</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                        <div style={{ height: 10 }} />
+                            <div className="mb-4">
+                                <label className="form-label">Role</label>
+                                <select
+                                    className="form-select"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                >
+                                    <option value="user">User</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
 
-                        {err ? <p style={{ color: "#b91c1c" }}>{err}</p> : null}
+                            {err && (
+                                <div className="alert alert-danger mb-3" role="alert">
+                                    {err}
+                                </div>
+                            )}
 
-                        <button className="btn" disabled={loading} style={{ marginTop: 12 }}>
-                            {loading ? "Setting up..." : "Complete Setup"}
-                        </button>
-                    </form>
+                            <button
+                                className="btn btn-primary w-100"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Setting up...
+                                    </>
+                                ) : "Complete Setup"}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

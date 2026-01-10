@@ -41,87 +41,124 @@ export default function DocumentsPage() {
     return (
         <>
             <Topbar />
-            <div className="container fade-in">
-                <div className="g-row" style={{ justifyContent: "space-between", marginBottom: 24 }}>
-                    <h1 className="section-title" style={{ margin: 0 }}>Documents</h1>
+            <div className="container py-4 fade-in">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h1 className="h2 m-0">Documents</h1>
                     {(me?.role === "admin" || me?.role === "manager") && (
-                        <Link href="/upload" className="btn">
-                            + Upload New
+                        <Link href="/upload" className="btn btn-primary">
+                            <i className="bi bi-plus-lg me-2"></i>Upload New
                         </Link>
                     )}
                 </div>
 
-                <div className="card">
-                    <div className="g-row" style={{ justifyContent: "space-between", marginBottom: 24 }}>
-                        <input
-                            className="input"
-                            placeholder="Search by filename or doc_id..."
-                            value={q}
-                            onChange={e => setQ(e.target.value)}
-                            style={{ maxWidth: 420 }}
-                        />
-                        <div className="g-row">
-                            {(me?.role === "admin" || me?.role === "manager") ? (
-                                <label className="muted" style={{ display: "flex", gap: 8, alignItems: "center", cursor: "pointer" }}>
-                                    <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} />
-                                    Show deleted
-                                </label>
-                            ) : null}
-                            <span className="pill">{filtered.length} docs</span>
+                <div className="card shadow-sm border-0">
+                    <div className="card-body">
+                        <div className="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                            <div className="flex-grow-1" style={{ maxWidth: 420 }}>
+                                <input
+                                    className="form-control"
+                                    placeholder="Search by filename or doc_id..."
+                                    value={q}
+                                    onChange={e => setQ(e.target.value)}
+                                />
+                            </div>
+                            <div className="d-flex align-items-center gap-3">
+                                {(me?.role === "admin" || me?.role === "manager") && (
+                                    <div className="form-check m-0">
+                                        <input
+                                            className="form-check-input"
+                                            type="checkbox"
+                                            id="showDeleted"
+                                            checked={showDeleted}
+                                            onChange={e => setShowDeleted(e.target.checked)}
+                                        />
+                                        <label className="form-check-label text-muted" htmlFor="showDeleted">
+                                            Show deleted
+                                        </label>
+                                    </div>
+                                )}
+                                <span className="badge bg-secondary rounded-pill">{filtered.length} docs</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div style={{ overflowX: "auto" }}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Document</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Uploaded</th>
-                                    <th style={{ textAlign: "right" }}>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filtered.map(d => (
-                                    <tr key={d.doc_id} style={{ opacity: d.is_deleted ? 0.6 : 1 }}>
-                                        <td>
-                                            <div><Link href={`/documents/${d.doc_id}`} style={{ fontWeight: 600, color: "var(--primary)" }}>{d.filename}</Link></div>
-                                            <div className="muted" style={{ fontSize: 13 }}>{d.doc_id} • {(d.size_bytes / 1024).toFixed(1)} KB</div>
-                                        </td>
-                                        <td><span className="pill" style={{ textTransform: "uppercase" }}>{d.file_type}</span></td>
-                                        <td>
-                                            {d.status === "error" ? (
-                                                <span className="pill" style={{ background: "#fef2f2", color: "#ef4444", borderColor: "#fecaca" }}>Error</span>
-                                            ) : (
-                                                <span className="pill" style={{ background: "#f0fdf4", color: "#166534", borderColor: "#bbf7d0" }}>{d.status}</span>
-                                            )}
-                                            {d.status === "error" ? <div style={{ color: "var(--danger)", fontSize: 12, marginTop: 4 }}>{d.error_message}</div> : null}
-                                        </td>
-                                        <td className="muted">{new Date(d.created_at).toLocaleDateString()}</td>
-                                        <td style={{ textAlign: "right" }}>
-                                            {(me?.role === "admin" || me?.role === "manager") ? (
-                                                d.is_deleted ? (
-                                                    <div className="g-row" style={{ justifyContent: "flex-end" }}>
-                                                        <span className="muted" style={{ fontSize: 12 }}>by {d.deleted_by || "?"}</span>
-                                                        <button className="btn secondary" style={{ padding: "6px 12px", fontSize: 12 }} onClick={() => onRestore(d.doc_id)}>Restore</button>
-                                                    </div>
-                                                ) : (
-                                                    <button className="btn secondary" style={{ padding: "6px 12px", fontSize: 12, color: "var(--danger)", borderColor: "var(--border)" }} onClick={() => onDelete(d.doc_id)}>
-                                                        Delete
-                                                    </button>
-                                                )
-                                            ) : (
-                                                <span className="muted">—</span>
-                                            )}
-                                        </td>
+                        <div className="table-responsive">
+                            <table className="table table-hover align-middle mb-0">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th className="border-0">Document</th>
+                                        <th className="border-0">Type</th>
+                                        <th className="border-0">Status</th>
+                                        <th className="border-0">Uploaded</th>
+                                        <th className="border-0 text-end">Actions</th>
                                     </tr>
-                                ))}
-                                {filtered.length === 0 ? (
-                                    <tr><td colSpan={5} className="muted" style={{ textAlign: "center", padding: 40 }}>No documents found.</td></tr>
-                                ) : null}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {filtered.map(d => (
+                                        <tr key={d.doc_id} className={d.is_deleted ? "text-muted opacity-50" : ""}>
+                                            <td>
+                                                <div className="fw-bold">
+                                                    <Link href={`/documents/${d.doc_id}`} className="text-decoration-none text-primary">
+                                                        {d.filename}
+                                                    </Link>
+                                                </div>
+                                                <div className="text-muted small">
+                                                    {d.doc_id} • {(d.size_bytes / 1024).toFixed(1)} KB
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span className="badge bg-light text-dark border text-uppercase">
+                                                    {d.file_type}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`badge rounded-pill ${d.status === 'error' ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-success-subtle text-success border border-success-subtle'}`}>
+                                                    {d.status}
+                                                </span>
+                                                {d.status === "error" && (
+                                                    <div className="text-danger small mt-1">{d.error_message}</div>
+                                                )}
+                                            </td>
+                                            <td className="text-muted small">
+                                                {new Date(d.created_at).toLocaleDateString()}
+                                            </td>
+                                            <td className="text-end">
+                                                {(me?.role === "admin" || me?.role === "manager") ? (
+                                                    d.is_deleted ? (
+                                                        <div className="d-flex justify-content-end align-items-center gap-2">
+                                                            <span className="text-muted small">
+                                                                by {d.deleted_by || "?"}
+                                                            </span>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-secondary"
+                                                                onClick={() => onRestore(d.doc_id)}
+                                                            >
+                                                                Restore
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            className="btn btn-sm btn-outline-danger"
+                                                            onClick={() => onDelete(d.doc_id)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    )
+                                                ) : (
+                                                    <span className="text-muted">—</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {filtered.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="text-center py-5 text-muted">
+                                                No documents found.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

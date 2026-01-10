@@ -83,199 +83,179 @@ export default function SignupPage() {
     return (
         <>
             <Topbar />
-            <div className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div className="card" style={{ maxWidth: 520, width: "100%", padding: "2rem" }}>
-                    <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-                        <h1 style={{ marginTop: 0, fontSize: "1.8rem" }}>Create Account</h1>
-                        <p className="muted">
-                            {step === 1 && "Enter your email to get started."}
-                            {step === 2 && "We sent a code to your email."}
-                            {step === 3 && "Complete your profile."}
-                        </p>
-                    </div>
+            <div className="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+                <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 520 }}>
+                    <div className="card-body p-4 p-md-5">
+                        <div className="text-center mb-4">
+                            <h1 className="h3 mb-2">Create Account</h1>
+                            <p className="text-muted">
+                                {step === 1 && "Enter your email to get started."}
+                                {step === 2 && "We sent a code to your email."}
+                                {step === 3 && "Complete your profile."}
+                            </p>
+                        </div>
 
-                    {step === 1 && (
-                        <form onSubmit={onSendCode}>
-                            <label>Email Address</label>
-                            <input
-                                className="input"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="you@company.com"
-                                required
-                                autoFocus
-                            />
-
-                            {err && <p style={{ color: "#b91c1c", marginTop: 10 }}>{err}</p>}
-
-                            <button className="btn" disabled={loading} style={{ width: "100%", marginTop: 20 }}>
-                                {loading ? "Sending Code..." : "Continue with Email"}
-                            </button>
-
-                            <div style={{ marginTop: 20, textAlign: "center" }}>
-                                <span className="muted">Already have an account? </span>
-                                <Link href="/login" style={{ textDecoration: 'none', color: '#000' }}>Login</Link>
-                            </div>
-                        </form>
-                    )}
-
-                    {step === 2 && (
-                        <form onSubmit={onVerifyCode}>
-                            <label>Verification Code</label>
-                            <input
-                                className="input"
-                                type="text"
-                                value={otp}
-                                onChange={(e) => setOtp(e.target.value)}
-                                placeholder="123456"
-                                required
-                                maxLength={6}
-                                style={{ letterSpacing: "2px", fontSize: "1.2rem", textAlign: "center" }}
-                                autoFocus
-                            />
-                            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5 }}>
-                                <span className="muted" style={{ fontSize: "0.8rem" }}>Sent to {email}</span>
-                                <button type="button" onClick={() => setStep(1)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: "0.8rem" }}>change email</button>
-                            </div>
-
-                            {err && <p style={{ color: "#b91c1c", marginTop: 10 }}>{err}</p>}
-
-                            <button className="btn" disabled={loading} style={{ width: "100%", marginTop: 20 }}>
-                                {loading ? "Verifying..." : "Verify Code"}
-                            </button>
-                        </form>
-                    )}
-
-                    {step === 3 && (
-                        <form onSubmit={onCompleteSignup}>
-                            <div style={{ marginBottom: 15 }}>
-                                <label>Email <span className="muted">(Verified)</span></label>
-                                <input className="input" value={email} disabled style={{ background: "#f3f4f6", color: "#666" }} />
-                            </div>
-
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 15 }}>
-                                <div>
-                                    <label>Full Name</label>
+                        {step === 1 && (
+                            <form onSubmit={onSendCode}>
+                                <div className="mb-3">
+                                    <label className="form-label">Email Address</label>
                                     <input
-                                        className="input"
-                                        value={fullName}
-                                        onChange={(e) => setFullName(e.target.value)}
+                                        className="form-control"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="you@company.com"
                                         required
                                         autoFocus
                                     />
                                 </div>
-                                <div>
-                                    <label>Organization Name</label>
-                                    <input
-                                        className="input"
-                                        value={organizationName}
-                                        onChange={(e) => setOrganizationName(e.target.value)}
-                                        placeholder="Company Inc."
-                                        required
-                                    />
-                                </div>
-                            </div>
 
-                            <div style={{ marginTop: 15 }}>
-                                <label>Password</label>
-                                <div style={{ position: "relative" }}>
+                                {err && <div className="alert alert-danger py-2">{err}</div>}
+
+                                <button className="btn btn-primary w-100 mb-4" disabled={loading}>
+                                    {loading ? "Sending Code..." : "Continue with Email"}
+                                </button>
+
+                                <div className="text-center">
+                                    <span className="text-muted small">Already have an account? </span>
+                                    <Link href="/login" className="text-decoration-none fw-bold text-dark">Login</Link>
+                                </div>
+                            </form>
+                        )}
+
+                        {step === 2 && (
+                            <form onSubmit={onVerifyCode}>
+                                <div className="mb-3">
+                                    <label className="form-label">Verification Code</label>
                                     <input
-                                        className="input"
-                                        type={showPassword ? "text" : "password"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
+                                        className="form-control text-center fs-4 letter-spacing-2"
+                                        type="text"
+                                        value={otp}
+                                        onChange={(e) => setOtp(e.target.value)}
+                                        placeholder="123456"
+                                        required
+                                        maxLength={6}
+                                        style={{ letterSpacing: "4px" }}
+                                        autoFocus
+                                    />
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <span className="text-muted small">Sent to {email}</span>
+                                        <button type="button" onClick={() => setStep(1)} className="btn btn-link p-0 text-decoration-none small text-muted">change email</button>
+                                    </div>
+                                </div>
+
+                                {err && <div className="alert alert-danger py-2">{err}</div>}
+
+                                <button className="btn btn-primary w-100 mb-3" disabled={loading}>
+                                    {loading ? "Verifying..." : "Verify Code"}
+                                </button>
+                            </form>
+                        )}
+
+                        {step === 3 && (
+                            <form onSubmit={onCompleteSignup}>
+                                <div className="mb-3">
+                                    <label className="form-label">Email <span className="text-muted small">(Verified)</span></label>
+                                    <input className="form-control bg-light" value={email} disabled />
+                                </div>
+
+                                <div className="row g-3 mb-3">
+                                    <div className="col-md-6">
+                                        <label className="form-label">Full Name</label>
+                                        <input
+                                            className="form-control"
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
+                                            required
+                                            autoFocus
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label className="form-label">Organization Name</label>
+                                        <input
+                                            className="form-control"
+                                            value={organizationName}
+                                            onChange={(e) => setOrganizationName(e.target.value)}
+                                            placeholder="Company Inc."
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Password</label>
+                                    <div className="position-relative">
+                                        <input
+                                            className="form-control"
+                                            type={showPassword ? "text" : "password"}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                            minLength={8}
+                                            style={{ paddingRight: 50 }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="btn btn-link text-decoration-none position-absolute top-50 end-0 translate-middle-y text-muted"
+                                            style={{ fontSize: "0.8rem", marginRight: "5px" }}
+                                        >
+                                            {showPassword ? "Hide" : "Show"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Confirm Password</label>
+                                    <input
+                                        className="form-control"
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
                                         required
                                         minLength={8}
-                                        style={{ paddingRight: 50 }}
                                     />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        style={{
-                                            position: "absolute",
-                                            right: 10,
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                            border: "none",
-                                            background: "none",
-                                            cursor: "pointer",
-                                            color: "#666",
-                                        }}
-                                    >
-                                        {showPassword ? "Hide" : "Show"}
-                                    </button>
                                 </div>
-                            </div>
 
-                            <div style={{ marginTop: 15 }}>
-                                <label>Confirm Password</label>
-                                <input
-                                    className="input"
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                    minLength={8}
-                                />
-                            </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Role</label>
+                                    <select
+                                        className="form-select"
+                                        value={role}
+                                        onChange={(e) => setRole(e.target.value)}
+                                    >
+                                        <option value="user">User</option>
+                                        <option value="manager">Manager</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
 
-                            <div style={{ marginTop: 15 }}>
-                                <label>Role</label>
-                                <select
-                                    className="input"
-                                    value={role}
-                                    onChange={(e) => setRole(e.target.value)}
-                                    style={{ background: 'white' }}
+                                {err && <div className="alert alert-danger py-2">{err}</div>}
+
+                                <button className="btn btn-primary w-100 mt-3" disabled={loading}>
+                                    {loading ? "Creating Account..." : "Complete Signup"}
+                                </button>
+                            </form>
+                        )}
+
+                        {/* Google Login only on step 1 */}
+                        {step === 1 && (
+                            <div className="mt-4">
+                                <div className="d-flex align-items-center my-3">
+                                    <div className="flex-grow-1 border-bottom"></div>
+                                    <span className="px-3 text-muted small">OR</span>
+                                    <div className="flex-grow-1 border-bottom"></div>
+                                </div>
+                                <a
+                                    href={`${API_BASE}/auth/google/login`}
+                                    className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2"
                                 >
-                                    <option value="user">User</option>
-                                    <option value="manager">Manager</option>
-                                    <option value="admin">Admin</option>
-                                </select>
+                                    <Image src="https://www.google.com/favicon.ico" alt="Google" width={16} height={16} />
+                                    Sign up with Google
+                                </a>
                             </div>
-
-                            {err && <p style={{ color: "#b91c1c", marginTop: 10 }}>{err}</p>}
-
-                            <button className="btn" disabled={loading} style={{ width: "100%", marginTop: 25 }}>
-                                {loading ? "Creating Account..." : "Complete Signup"}
-                            </button>
-                        </form>
-                    )}
-
-                    {/* Google Login only on step 1 */}
-                    {step === 1 && (
-                        <div style={{ marginTop: 20 }}>
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                margin: '20px 0',
-                                color: '#666'
-                            }}>
-                                <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}></div>
-                                <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>OR</span>
-                                <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}></div>
-                            </div>
-                            <a
-                                href={`${API_BASE}/auth/google/login`}
-                                className="btn"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '10px',
-                                    background: '#fff',
-                                    color: '#333',
-                                    border: '1px solid #d1d5db',
-                                    textDecoration: 'none',
-                                    width: '100%',
-                                    boxSizing: 'border-box'
-                                }}
-                            >
-                                <Image src="https://www.google.com/favicon.ico" alt="Google" width={16} height={16} />
-                                Sign up with Google
-                            </a>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
         </>

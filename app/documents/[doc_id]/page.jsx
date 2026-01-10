@@ -17,53 +17,90 @@ export default function DocDetails({ params }) {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <div className="row" style={{ justifyContent: "space-between" }}>
-                    <h1 style={{ margin: 0 }}>Document Details</h1>
-                    <Link className="btn secondary" href="/documents">Back</Link>
+            <div className="container py-4 fit-in">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h1 className="h2 m-0">Document Details</h1>
+                    <Link className="btn btn-outline-secondary" href="/documents">
+                        <i className="bi bi-arrow-left me-2"></i>Back
+                    </Link>
                 </div>
 
-                {err ? <div className="card" style={{ marginTop: 12, color: "#b91c1c" }}>{err}</div> : null}
-                {!data ? <div className="card" style={{ marginTop: 12 }}>Loading...</div> : (
+                {err && <div className="alert alert-danger">{err}</div>}
+
+                {!data ? (
+                    !err && (
+                        <div className="d-flex justify-content-center py-5">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    )
+                ) : (
                     <>
-                        <div className="card" style={{ marginTop: 12 }}>
-                            <div className="row" style={{ justifyContent: "space-between" }}>
-                                <div>
-                                    <h2 style={{ marginTop: 0 }}>{data.document.filename}</h2>
-                                    <div className="muted">{data.document.doc_id} • {data.document.file_type} • {data.document.source}</div>
+                        <div className="card shadow-sm border-0 mb-4">
+                            <div className="card-body">
+                                <div className="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h2 className="h4 text-primary mb-1">{data.document.filename}</h2>
+                                        <div className="text-muted small">
+                                            {data.document.doc_id} • {data.document.file_type} • {data.document.source}
+                                        </div>
+                                    </div>
+                                    <span className={`badge rounded-pill ${data.document.is_deleted ? 'bg-danger' : 'bg-success'}`}>
+                                        {data.document.is_deleted ? "DELETED" : "ACTIVE"}
+                                    </span>
                                 </div>
-                                {data.document.is_deleted ? <span className="pill">deleted</span> : <span className="pill">active</span>}
                             </div>
                         </div>
 
-                        <div className="row" style={{ marginTop: 12, alignItems: "stretch" }}>
-                            <div className="card" style={{ flex: "1 1 340px", minWidth: 320 }}>
-                                <h3 style={{ marginTop: 0 }}>Token-based chunks</h3>
-                                <div className="muted" style={{ marginBottom: 8 }}>Chunks are created by token count + overlap.</div>
-                                <div style={{ maxHeight: 520, overflow: "auto" }}>
-                                    {data.chunks.map((c, idx) => (
-                                        <button
-                                            key={c.chunk_id}
-                                            className="btn secondary"
-                                            style={{ width: "100%", textAlign: "left", marginBottom: 8, borderColor: idx === selected ? "#111827" : "#e5e7eb" }}
-                                            onClick={() => setSelected(idx)}
-                                        >
-                                            <div style={{ fontWeight: 800 }}>Chunk #{c.chunk_index}</div>
-                                            <div className="muted" style={{ fontSize: 12, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                                                {c.text}
-                                            </div>
-                                        </button>
-                                    ))}
+                        <div className="row g-4">
+                            <div className="col-lg-4 col-md-5">
+                                <div className="card shadow-sm border-0 h-100">
+                                    <div className="card-header bg-white py-3">
+                                        <h3 className="h6 m-0">Token-based chunks</h3>
+                                    </div>
+                                    <div className="card-body p-0">
+                                        <div className="list-group list-group-flush" style={{ maxHeight: "600px", overflowY: "auto" }}>
+                                            {data.chunks.map((c, idx) => (
+                                                <button
+                                                    key={c.chunk_id}
+                                                    className={`list-group-item list-group-item-action py-3 ${idx === selected ? 'active' : ''}`}
+                                                    onClick={() => setSelected(idx)}
+                                                    aria-current={idx === selected}
+                                                >
+                                                    <div className="d-flex w-100 justify-content-between align-items-center mb-1">
+                                                        <strong className="mb-0">Chunk #{c.chunk_index}</strong>
+                                                        <span className="badge bg-light text-dark border">{c.text.length} chars</span>
+                                                    </div>
+                                                    <div className="small text-truncate text-muted" style={{ opacity: idx === selected ? 0.8 : 1 }}>
+                                                        {c.text}
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="card" style={{ flex: "2 1 520px", minWidth: 320 }}>
-                                <h3 style={{ marginTop: 0 }}>Chunk preview</h3>
-                                <div className="muted">Used during retrieval to answer user queries.</div>
-                                <div style={{ height: 10 }} />
-                                <textarea className="textarea" rows={22} value={data.chunks[selected]?.text || ""} readOnly />
-                                <div style={{ marginTop: 10 }} className="muted">
-                                    Chunk ID: <code>{data.chunks[selected]?.chunk_id}</code>
+                            <div className="col-lg-8 col-md-7">
+                                <div className="card shadow-sm border-0 h-100">
+                                    <div className="card-header bg-white py-3">
+                                        <h3 className="h6 m-0">Chunk Preview</h3>
+                                    </div>
+                                    <div className="card-body">
+                                        <p className="text-muted small mb-3">
+                                            Used during retrieval to answer user queries.
+                                        </p>
+                                        <textarea
+                                            className="form-control bg-light mb-3"
+                                            style={{ minHeight: "500px", fontFamily: "monospace", fontSize: "0.875rem" }}
+                                            value={data.chunks[selected]?.text || ""}
+                                            readOnly
+                                        />
+                                        <div className="text-muted small">
+                                            Chunk ID: <code className="text-dark bg-light px-1 py-1 rounded border">{data.chunks[selected]?.chunk_id}</code>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -56,41 +56,101 @@ export default function UploadPage() {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <h1 style={{ marginTop: 0 }}>Upload</h1>
+            <div className="container py-4 fade-in">
+                <h1 className="h2 mb-4">Upload Documents</h1>
 
-                <div className="card">
-                    <h2 style={{ marginTop: 0 }}>Chunking settings (token-based)</h2>
-                    <p className="muted">These control chunk size and overlap in tokens (better aligned with LLMs than characters).</p>
-                    <div className="grid2">
-                        <div>
-                            <label>Chunk tokens</label>
-                            <input className="input" type="number" value={chunkTokens} onChange={e => setChunkTokens(parseInt(e.target.value || "500", 10))} />
-                        </div>
-                        <div>
-                            <label>Overlap tokens</label>
-                            <input className="input" type="number" value={overlapTokens} onChange={e => setOverlapTokens(parseInt(e.target.value || "80", 10))} />
+                <div className="card shadow-sm border-0 mb-4">
+                    <div className="card-header bg-white py-3">
+                        <h2 className="h5 m-0 text-primary">Chunking Settings</h2>
+                    </div>
+                    <div className="card-body">
+                        <p className="text-muted small mb-3">
+                            Control chunk size and overlap in tokens (better aligned with LLMs than characters).
+                        </p>
+                        <div className="row g-3">
+                            <div className="col-md-6">
+                                <label className="form-label">Chunk tokens</label>
+                                <input
+                                    className="form-control"
+                                    type="number"
+                                    value={chunkTokens}
+                                    onChange={e => setChunkTokens(parseInt(e.target.value || "500", 10))}
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="form-label">Overlap tokens</label>
+                                <input
+                                    className="form-control"
+                                    type="number"
+                                    value={overlapTokens}
+                                    onChange={e => setOverlapTokens(parseInt(e.target.value || "80", 10))}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="card" style={{ marginTop: 12 }}>
-                    <h2 style={{ marginTop: 0 }}>Local upload</h2>
-                    <p className="muted">Upload PDF, DOCX, TXT/MD, or CSV to index into Qdrant.</p>
-                    <input id="file" type="file" onChange={e => setFile(e.target.files?.[0] || null)} />
-                    <div style={{ height: 12 }} />
-                    <button className="btn" onClick={localUpload} disabled={!file || busy}>
-                        {busy ? "Indexing..." : "Upload & index"}
-                    </button>
+                <div className="row g-4">
+                    <div className="col-md-6">
+                        <div className="card shadow-sm border-0 h-100">
+                            <div className="card-header bg-white py-3">
+                                <h2 className="h5 m-0">Local Upload</h2>
+                            </div>
+                            <div className="card-body">
+                                <p className="text-muted small mb-3">
+                                    Upload PDF, DOCX, TXT/MD, or CSV to index into Qdrant.
+                                </p>
+                                <div className="mb-3">
+                                    <input
+                                        className="form-control"
+                                        type="file"
+                                        id="file"
+                                        onChange={e => setFile(e.target.files?.[0] || null)}
+                                    />
+                                </div>
+                                <button
+                                    className="btn btn-primary w-100"
+                                    onClick={localUpload}
+                                    disabled={!file || busy}
+                                >
+                                    {busy ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Indexing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i className="bi bi-upload me-2"></i>Upload & Index
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="card shadow-sm border-0 h-100">
+                            <div className="card-header bg-white py-3">
+                                <h2 className="h5 m-0">Google Drive Upload</h2>
+                            </div>
+                            <div className="card-body">
+                                <p className="text-muted small mb-3">
+                                    Pick a file from your Drive and index it without downloading it manually.
+                                </p>
+                                <div className="d-grid">
+                                    <DrivePicker onPicked={driveUpload} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="card" style={{ marginTop: 12 }}>
-                    <h2 style={{ marginTop: 0 }}>Google Drive upload (fully wired)</h2>
-                    <p className="muted">Pick a file from your Drive and index it without downloading it manually.</p>
-                    <DrivePicker onPicked={driveUpload} />
-                </div>
-
-                {msg ? <div className="card" style={{ marginTop: 12 }}>{msg}</div> : null}
+                {msg && (
+                    <div className="alert alert-info mt-4 d-flex align-items-center" role="alert">
+                        <i className="bi bi-info-circle-fill me-2"></i>
+                        <div>{msg}</div>
+                    </div>
+                )}
             </div>
         </>
     );

@@ -43,113 +43,7 @@ body {
 }
 
 /* --- Layout --- */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 24px;
-}
-
-.topbar {
-    position: sticky;
-    top: 0;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    z-index: 50;
-    padding: 0 24px;
-    height: 72px;
-    /* Taller nicer header */
-    display: flex;
-    align-items: center;
-}
-
-/* --- Components --- */
-
-/* Cards with Lift Effect */
-.card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    /* Smooth corners */
-    padding: 32px;
-    box-shadow: var(--shadow-sm);
-    transition: var(--transition);
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--border-hover);
-}
-
-/* Premium Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: var(--primary);
-    /* Fallback */
-    background: var(--primary-gradient);
-    color: white;
-    padding: 12px 24px;
-    font-weight: 600;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 15px;
-    gap: 8px;
-    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
-}
-
-.btn:hover {
-    opacity: 0.95;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 12px -1px rgba(79, 70, 229, 0.3);
-}
-
-.btn:active {
-    transform: translateY(0);
-}
-
-.btn.secondary {
-    background: white;
-    color: var(--text-main);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-}
-
-.btn.secondary:hover {
-    background: var(--bg-subtle);
-    border-color: var(--border-hover);
-    box-shadow: var(--shadow-md);
-    color: var(--primary);
-}
-
-/* New Inputs */
-.input,
-.select,
-.textarea {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    background: var(--bg-surface);
-    font-family: inherit;
-    font-size: 15px;
-    transition: var(--transition);
-    color: var(--text-main);
-    box-sizing: border-box;
-}
-
-.input:focus,
-.select:focus,
-.textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-    /* Glow focus */
-}
+/* .container removed - using Bootstrap container */
 
 /* --- Utilities --- */
 .hero-title {
@@ -157,10 +51,17 @@ body {
     font-weight: 800;
     margin-bottom: 24px;
     background: var(--primary-gradient);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -0.03em;
     line-height: 1.1;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
 }
 
 .section-title {
@@ -177,16 +78,12 @@ body {
 
 /* Feature Grid with Hover Glows */
 .feature-card {
-    background: white;
-    padding: 32px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
     transition: all 0.3s ease;
 }
 
 .feature-card:hover {
     transform: translateY(-6px);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-xl) !important;
     border-color: rgba(79, 70, 229, 0.3);
 }
 
@@ -223,17 +120,11 @@ body {
 
 /* Roles */
 .role-card {
-    background: white;
-    padding: 28px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--primary);
-    box-shadow: var(--shadow-sm);
     transition: var(--transition);
 }
 
 .role-card:hover {
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg) !important;
 }
 
 /* Animations */
@@ -249,75 +140,27 @@ body {
     }
 }
 
-.fade-in {
-    animation: fadeIn 0.6s ease-out;
+
+/* Cards with Lift Effect - Adapted for Bootstrap .card */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg) !important;
+    border-color: var(--border-hover);
+    transition: var(--transition);
 }
 
-/* Grid Helpers */
-.g-row {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
+/* Premium Buttons - Enhancing Bootstrap .btn */
+/* Only applying hover lift, letting Bootstrap handle colors */
+.btn {
+    transition: var(--transition);
+    border-radius: 12px;
 }
 
-.hero-section {
-    padding: 100px 0 140px;
-    text-align: center;
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.1);
 }
 
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 32px;
-    margin-top: 60px;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    margin-top: 40px;
-}
-
-.section-alt {
-    background: var(--bg-surface);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 100px 0;
-}
-
-.steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
-}
-
-/* Tables */
-th {
-    background: var(--bg-subtle);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 16px 24px;
-    color: var(--text-muted);
-}
-
-td {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--border);
-}
-
-tr:hover td {
-    background: var(--bg-subtle);
-}
-
-/* Pills */
-.pill {
-    padding: 6px 14px;
-    border-radius: 99px;
-    font-size: 13px;
-    border: 1px solid var(--border);
-    background: white;
-    font-weight: 600;
+.btn:active {
+    transform: translateY(0);
 }

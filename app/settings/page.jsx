@@ -36,88 +36,90 @@ export default function SettingsPage() {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <h1>Integrations</h1>
+            <div className="container py-4 fade-in">
+                <h1 className="h2 mb-4">Settings</h1>
 
-                <div className="card">
-                    <h2>Profile & Organization</h2>
-                    <div className="form-group" style={{ marginBottom: 15 }}>
-                        <label>Full Name</label>
-                        <input
-                            type="text"
-                            className="input"
-                            value={user.full_name || ""}
-                            onChange={(e) => setUser({ ...user, full_name: e.target.value })}
-                        />
-                        <button
-                            className="btn primary"
-                            style={{ marginTop: 10 }}
-                            onClick={async () => {
-                                try {
-                                    await import("../lib/api").then(m => m.updateProfile({ full_name: user.full_name }));
-                                    alert("Profile Updated!");
-                                } catch (e) {
-                                    alert("Error updating profile");
-                                }
-                            }}
-                        >
-                            Save Name
-                        </button>
+                <div className="card shadow-sm border-0 mb-4">
+                    <div className="card-header bg-white py-3">
+                        <h2 className="h5 m-0 text-primary">Profile & Organization</h2>
                     </div>
+                    <div className="card-body">
+                        <div className="mb-3">
+                            <label className="form-label">Full Name</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={user.full_name || ""}
+                                onChange={(e) => setUser({ ...user, full_name: e.target.value })}
+                            />
+                            <button
+                                className="btn btn-primary mt-2"
+                                onClick={async () => {
+                                    try {
+                                        await import("../lib/api").then(m => m.updateProfile({ full_name: user.full_name }));
+                                        alert("Profile Updated!");
+                                    } catch (e) {
+                                        alert("Error updating profile");
+                                    }
+                                }}
+                            >
+                                Save Name
+                            </button>
+                        </div>
 
-                    <div className="form-group" style={{ marginBottom: 15 }}>
-                        <label>Role</label>
-                        <input type="text" className="input" value={user.role} readOnly disabled style={{ opacity: 0.7 }} />
+                        <div className="mb-3">
+                            <label className="form-label">Role</label>
+                            <input type="text" className="form-control bg-light" value={user.role} readOnly disabled />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Organization Name</label>
+                            {user.role === 'admin' ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder={user.org_name || "Enter new Organization Name"}
+                                        defaultValue={user.org_name || ""}
+                                        onChange={(e) => setUser({ ...user, _temp_org_name: e.target.value })}
+                                    />
+                                    <button
+                                        className="btn btn-primary mt-2"
+                                        onClick={async () => {
+                                            if (!user._temp_org_name) return;
+                                            try {
+                                                await import("../lib/api").then(m => m.updateOrganization({ name: user._temp_org_name }));
+                                                alert("Organization Updated!");
+                                            } catch (e) {
+                                                alert("Error updating organization: " + e.message);
+                                            }
+                                        }}
+                                    >
+                                        Update Org Name
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="text-muted small">Contact Admin to change Organization Name</div>
+                            )}
+                        </div>
+
+                        <div className="row g-3 text-muted small mt-2">
+                            <div className="col-md-6">
+                                <strong>Org ID:</strong> <code className="text-dark">{user.org_id}</code>
+                            </div>
+                            <div className="col-md-6">
+                                <strong>Org Slug:</strong> <code className="text-dark">{user.org_slug}</code>
+                            </div>
+                        </div>
                     </div>
-
-                    <div className="form-group" style={{ marginBottom: 15 }}>
-                        <label>Organization Name</label>
-                        {/* We don't have org_name in user object yet, usually it comes from getMe response? 
-                             Wait, getMe returns org_id and org_slug but maybe not org_name. 
-                             I should check schemas.py MeResponse. It has org_id/slug. 
-                             To edit Org Name, I need to fetch it or assume user knows it? 
-                             Ideally I should have fetched it. For now I will make it editable if I can.
-                             Actually, MeResponse doesn't send Name. I should update MeResponse or fetch Org details.
-                             Given constraints, I'll just add the field but if it's empty, user can set it.
-                          */}
-                        {user.role === 'admin' ? (
-                            <>
-                                <input
-                                    type="text"
-                                    className="input"
-                                    placeholder={user.org_name || "Enter new Organization Name"}
-                                    defaultValue={user.org_name || ""}
-                                    onChange={(e) => setUser({ ...user, _temp_org_name: e.target.value })}
-                                />
-                                <button
-                                    className="btn primary"
-                                    style={{ marginTop: 10 }}
-                                    onClick={async () => {
-                                        if (!user._temp_org_name) return;
-                                        try {
-                                            await import("../lib/api").then(m => m.updateOrganization({ name: user._temp_org_name }));
-                                            alert("Organization Updated!");
-                                        } catch (e) {
-                                            alert("Error updating organization: " + e.message);
-                                        }
-                                    }}
-                                >
-                                    Update Org Name
-                                </button>
-                            </>
-                        ) : (
-                            <div className="muted">Contact Admin to change Organization Name</div>
-                        )}
-                    </div>
-
-                    <p><strong>Org ID:</strong> {user.org_id}</p>
-                    <p><strong>Org Slug:</strong> {user.org_slug}</p>
                 </div>
 
-                <div className="card" style={{ marginTop: 20 }}>
-                    <h2>Security</h2>
-                    <div className="form-group" style={{ marginBottom: 15 }}>
-                        <label>Change Password</label>
+                <div className="card shadow-sm border-0 mb-4">
+                    <div className="card-header bg-white py-3">
+                        <h2 className="h5 m-0 text-danger">Security</h2>
+                    </div>
+                    <div className="card-body">
+                        <h3 className="h6 mb-3">Change Password</h3>
                         <form
                             onSubmit={async (e) => {
                                 e.preventDefault();
@@ -139,45 +141,38 @@ export default function SettingsPage() {
                                 }
                             }}
                         >
-                            <input name="current" type="password" className="input" placeholder="Current Password" required style={{ marginBottom: 10 }} />
-                            <input name="newPass" type="password" className="input" placeholder="New Password" required minLength={8} style={{ marginBottom: 10 }} />
-                            <input name="confirmPass" type="password" className="input" placeholder="Confirm New Password" required minLength={8} style={{ marginBottom: 10 }} />
-                            <button className="btn">Update Password</button>
+                            <div className="mb-3">
+                                <input name="current" type="password" className="form-control" placeholder="Current Password" required />
+                            </div>
+                            <div className="mb-3">
+                                <input name="newPass" type="password" className="form-control" placeholder="New Password" required minLength={8} />
+                            </div>
+                            <div className="mb-3">
+                                <input name="confirmPass" type="password" className="form-control" placeholder="Confirm New Password" required minLength={8} />
+                            </div>
+                            <button className="btn btn-danger">Update Password</button>
                         </form>
                     </div>
                 </div>
 
-                {user.role === 'admin' || user.role === 'manager' ? (
-                    <div className="card" style={{ marginTop: 20 }}>
-                        <h2>Chatbot Embed Code</h2>
-                        <p className="muted">
-                            Add this chatbot to your website by copying the code below.
-                            Ensure your website domain is allowed (CORS to be configured if on different domain).
-                        </p>
-
-                        <h3>Embed Script</h3>
-                        <div style={{ position: 'relative' }}>
-                            <textarea
-                                readOnly
-                                style={{
-                                    width: '100%',
-                                    height: '150px',
-                                    padding: '10px',
-                                    background: '#f5f5f5',
-                                    border: '1px solid #ddd',
-                                    fontFamily: 'monospace',
-                                    fontSize: '13px',
-                                    resize: 'none'
-                                }}
-                                value={scriptCode}
-                                onClick={(e) => e.target.select()}
-                            />
+                {(user.role === 'admin' || user.role === 'manager') && (
+                    <div className="card shadow-sm border-0 mb-4">
+                        <div className="card-header bg-white py-3">
+                            <h2 className="h5 m-0">Integrations</h2>
                         </div>
-
-                        <h3>Direct Link</h3>
-                        <a href={embedUrl} target="_blank">{embedUrl}</a>
+                        <div className="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 className="h6 mb-1">Chatbot Embed Code</h3>
+                                <p className="text-muted small mb-0">
+                                    Get the code to add the chatbot to your website.
+                                </p>
+                            </div>
+                            <a href="/admin/embed-code" className="btn btn-outline-primary">
+                                View Embed Code
+                            </a>
+                        </div>
                     </div>
-                ) : null}
+                )}
             </div>
         </>
     );

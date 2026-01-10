@@ -8,77 +8,91 @@ export default function Topbar() {
     const { user, isAdmin, isManager } = useAuth();
 
     return (
-        <div className="topbar">
-            <div className="container g-row" style={{ justifyContent: "space-between" }}>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+            <div className="container">
+                <Link href="/" className="navbar-brand fw-bold">
+                    KB Admin
+                </Link>
 
-                {/* LEFT NAV */}
-                <div className="g-row">
-                    <Link href="/" style={{ fontWeight: 800 }}>
-                        KB Admin
-                    </Link>
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
 
-                    {/* Everyone can see documents */}
-                    {user && (
-                        <Link href="/documents" className="muted">
-                            Documents
-                        </Link>
-                    )}
+                <div className="collapse navbar-collapse" id="navbarContent">
+                    {/* LEFT NAV */}
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        {user && (
+                            <li className="nav-item">
+                                <Link href="/documents" className="nav-link">
+                                    Documents
+                                </Link>
+                            </li>
+                        )}
 
-                    {/* Admin + Manager can upload */}
-                    {(isAdmin || isManager) && (
-                        <Link href="/upload" className="muted">
-                            Upload
-                        </Link>
-                    )}
+                        {(isAdmin || isManager) && (
+                            <li className="nav-item">
+                                <Link href="/upload" className="nav-link">
+                                    Upload
+                                </Link>
+                            </li>
+                        )}
 
-                    {/* Admin only */}
-                    {isAdmin && (
-                        <>
-                            <Link href="/admin/users" className="muted">
-                                Users
+                        {isAdmin && (
+                            <>
+                                <li className="nav-item">
+                                    <Link href="/admin/users" className="nav-link">
+                                        Users
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link href="/admin/audit" className="nav-link">
+                                        Audit
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+
+                        {(isAdmin || isManager) && (
+                            <li className="nav-item">
+                                <Link href="/settings" className="nav-link">
+                                    Integration
+                                </Link>
+                            </li>
+                        )}
+
+                        {user && (
+                            <li className="nav-item">
+                                <Link href="/pricing" className="nav-link">
+                                    Pricing
+                                </Link>
+                            </li>
+                        )}
+                    </ul>
+
+                    {/* RIGHT NAV */}
+                    <div className="d-flex align-items-center gap-3">
+                        {user ? (
+                            <>
+                                <span className="badge bg-secondary rounded-pill">{user.role}</span>
+                                <span className="text-light small d-none d-md-inline">{user.email}</span>
+                                <button
+                                    className="btn btn-sm btn-outline-light"
+                                    onClick={() => {
+                                        clearToken();
+                                        location.href = "/login";
+                                    }}
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <Link href="/login" className="btn btn-sm btn-outline-light">
+                                Login
                             </Link>
-                            <Link href="/admin/audit" className="muted">
-                                Audit
-                            </Link>
-                        </>
-                    )}
-
-                    {(isAdmin || isManager) && (
-                        <Link href="/settings" className="muted">
-                            Integration
-                        </Link>
-                    )}
-
-                    {user && (
-                        <Link href="/pricing" className="muted">
-                            Pricing
-                        </Link>
-                    )}
-                </div>
-
-                {/* RIGHT NAV */}
-                <div className="g-row">
-                    {user ? (
-                        <>
-                            <span className="pill">{user.role}</span>
-                            <span className="muted">{user.email}</span>
-                            <button
-                                className="btn secondary"
-                                onClick={() => {
-                                    clearToken();
-                                    location.href = "/login";
-                                }}
-                            >
-                                Logout
-                            </button>
-                        </>
-                    ) : (
-                        <Link href="/login" className="btn secondary">
-                            Login
-                        </Link>
-                    )}
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </nav>
     );
 }

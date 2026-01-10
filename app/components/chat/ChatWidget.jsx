@@ -145,8 +145,8 @@ export default function ChatWidget({ embedded = false, org }) {
     return (
         <>
             {/* CHAT WINDOW */}
-            <div className={`chat-window ${isOpen ? "open" : ""}`}>
-                <div className="chat-card">
+            <div className={`chat-window ${isOpen ? "open" : ""} ${embedded ? "embedded-mode" : ""}`}>
+                <div className="chat-card shadow-lg">
                     {/* HEADER */}
                     <div className="chat-header">
                         <div>
@@ -188,20 +188,25 @@ export default function ChatWidget({ embedded = false, org }) {
                     </div>
 
                     {/* INPUT */}
-                    <div className="chat-input">
+                    <div className="chat-input border-top p-3 bg-white d-flex gap-2">
                         <textarea
                             ref={textareaRef}
+                            className="form-control"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={onKeyDown}
                             placeholder="Type a message…"
                             disabled={loading}
+                            rows={1}
+                            style={{ resize: "none", minHeight: "44px" }}
                         />
                         <button
+                            className="btn btn-primary d-flex align-items-center justify-content-center p-0"
                             onClick={send}
                             disabled={!canSend}
+                            style={{ width: "44px", height: "44px", borderRadius: "10px" }}
                         >
-                            Send
+                            <i className="bi bi-send-fill"></i>
                         </button>
                     </div>
 

@@ -26,42 +26,63 @@ export default function ForgotPasswordPage() {
     return (
         <>
             <Topbar />
-            <div className="container" style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div className="card" style={{ maxWidth: 450, width: "100%", padding: "2rem" }}>
-                    <div style={{ marginBottom: "1.5rem", textAlign: "center" }}>
-                        <h1 style={{ marginTop: 0, fontSize: "1.8rem" }}>Reset Password</h1>
-                        <p className="muted">Enter your email to receive a reset link.</p>
-                    </div>
-
-                    {status === "success" ? (
-                        <div style={{ textAlign: "center" }}>
-                            <div style={{ color: "green", marginBottom: 20 }}>{msg}</div>
-                            <Link href="/login" className="btn">Back to Login</Link>
+            <div className="container d-flex align-items-center justify-content-center min-vh-80 py-5">
+                <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 450 }}>
+                    <div className="card-body p-4 p-md-5">
+                        <div className="text-center mb-4">
+                            <h1 className="h3 mb-2">Reset Password</h1>
+                            <p className="text-muted">Enter your email to receive a reset link.</p>
                         </div>
-                    ) : (
-                        <form onSubmit={onSubmit}>
-                            <label>Email Address</label>
-                            <input
-                                className="input"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="you@company.com"
-                                required
-                                autoFocus
-                            />
 
-                            {status === "error" && <p style={{ color: "#b91c1c", marginTop: 10 }}>{msg}</p>}
-
-                            <button className="btn" disabled={status === "loading"} style={{ width: "100%", marginTop: 20 }}>
-                                {status === "loading" ? "Sending..." : "Send Reset Link"}
-                            </button>
-
-                            <div style={{ marginTop: 20, textAlign: "center" }}>
-                                <Link href="/login" style={{ textDecoration: 'none', color: '#666', fontSize: '0.9rem' }}>Back to Login</Link>
+                        {status === "success" ? (
+                            <div className="text-center">
+                                <div className="alert alert-success mb-4" role="alert">
+                                    <i className="bi bi-check-circle-fill me-2"></i>
+                                    {msg}
+                                </div>
+                                <Link href="/login" className="btn btn-primary w-100">Back to Login</Link>
                             </div>
-                        </form>
-                    )}
+                        ) : (
+                            <form onSubmit={onSubmit}>
+                                <div className="mb-3">
+                                    <label className="form-label">Email Address</label>
+                                    <input
+                                        className="form-control"
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="you@company.com"
+                                        required
+                                        autoFocus
+                                    />
+                                </div>
+
+                                {status === "error" && (
+                                    <div className="alert alert-danger mb-3" role="alert">
+                                        {msg}
+                                    </div>
+                                )}
+
+                                <button
+                                    className="btn btn-primary w-100 mb-3"
+                                    disabled={status === "loading"}
+                                >
+                                    {status === "loading" ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Sending...
+                                        </>
+                                    ) : "Send Reset Link"}
+                                </button>
+
+                                <div className="text-center">
+                                    <Link href="/login" className="text-decoration-none text-muted small">
+                                        Back to Login
+                                    </Link>
+                                </div>
+                            </form>
+                        )}
+                    </div>
                 </div>
             </div>
         </>

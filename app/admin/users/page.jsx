@@ -46,64 +46,114 @@ export default function UsersPage() {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <h1 style={{ marginTop: 0 }}>Users</h1>
-                <div className="card">
-                    <h2 style={{ marginTop: 0 }}>Create user</h2>
-                    <div className="row">
-                        <div style={{ flex: "1 1 260px" }}>
-                            <label>Email</label>
-                            <input className="input" value={email} onChange={e => setEmail(e.target.value)} />
-                        </div>
-                        <div style={{ flex: "1 1 260px" }}>
-                            <label>Full name</label>
-                            <input className="input" value={full_name} onChange={e => setFullName(e.target.value)} />
-                        </div>
-                    </div>
-                    <div className="row" style={{ marginTop: 10 }}>
-                        <div style={{ flex: "1 1 220px" }}>
-                            <label>Role</label>
-                            <select className="select" value={role} onChange={e => setRole(e.target.value)}>
-                                <option value="admin">admin</option>
-                                <option value="manager">manager</option>
-                                <option value="user">user</option>
-                            </select>
-                        </div>
-                        <div style={{ flex: "2 1 320px" }}>
-                            <label>Password</label>
-                            <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-                        </div>
-                        <div style={{ alignSelf: "flex-end" }}>
-                            <button className="btn" onClick={create} disabled={!email || !full_name || !password}>Create</button>
-                        </div>
-                    </div>
-                    {err ? <p style={{ color: "#b91c1c" }}>{err}</p> : null}
+            <div className="container py-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <h1 className="h2 m-0">Users</h1>
                 </div>
 
-                <div className="card" style={{ marginTop: 12 }}>
-                    <h2 style={{ marginTop: 0 }}>All users</h2>
-                    <div style={{ overflowX: "auto" }}>
-                        <table>
-                            <thead>
+                <div className="card shadow-sm border-0 mb-4">
+                    <div className="card-header bg-white py-3">
+                        <h2 className="h5 m-0 text-primary">Create User</h2>
+                    </div>
+                    <div className="card-body">
+                        <div className="row g-3">
+                            <div className="col-md-6">
+                                <label className="form-label">Email</label>
+                                <input
+                                    className="form-control"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    placeholder="user@example.com"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label className="form-label">Full Name</label>
+                                <input
+                                    className="form-control"
+                                    value={full_name}
+                                    onChange={e => setFullName(e.target.value)}
+                                    placeholder="John Doe"
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <label className="form-label">Role</label>
+                                <select className="form-select" value={role} onChange={e => setRole(e.target.value)}>
+                                    <option value="admin">Admin</option>
+                                    <option value="manager">Manager</option>
+                                    <option value="user">User</option>
+                                </select>
+                            </div>
+                            <div className="col-md-5">
+                                <label className="form-label">Password</label>
+                                <input
+                                    className="form-control"
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                />
+                            </div>
+                            <div className="col-md-3 d-flex align-items-end">
+                                <button
+                                    className="btn btn-primary w-100"
+                                    onClick={create}
+                                    disabled={!email || !full_name || !password}
+                                >
+                                    <i className="bi bi-plus-lg me-2"></i>Create User
+                                </button>
+                            </div>
+                        </div>
+                        {err && <div className="alert alert-danger mt-3 mb-0">{err}</div>}
+                    </div>
+                </div>
+
+                <div className="card shadow-sm border-0">
+                    <div className="card-header bg-white py-3">
+                        <h2 className="h5 m-0">All Users</h2>
+                    </div>
+                    <div className="table-responsive">
+                        <table className="table table-hover align-middle mb-0">
+                            <thead className="table-light">
                                 <tr>
-                                    <th>Email</th>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th></th>
+                                    <th className="px-4 border-0">Email</th>
+                                    <th className="border-0">Name</th>
+                                    <th className="border-0">Role</th>
+                                    <th className="border-0">Status</th>
+                                    <th className="border-0 text-end px-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.map(u => (
                                     <tr key={u.email}>
-                                        <td style={{ fontWeight: 800 }}>{u.email}</td>
+                                        <td className="px-4 fw-bold text-dark">{u.email}</td>
                                         <td>{u.full_name}</td>
-                                        <td><span className="pill">{u.role}</span></td>
-                                        <td>{u.is_active ? <span className="pill">active</span> : <span className="pill">inactive</span>}</td>
-                                        <td><button className="btn secondary" onClick={() => toggleActive(u)}>{u.is_active ? "Deactivate" : "Activate"}</button></td>
+                                        <td>
+                                            <span className={`badge rounded-pill ${u.role === 'admin' ? 'bg-dark' : u.role === 'manager' ? 'bg-info text-dark' : 'bg-secondary'}`}>
+                                                {u.role.toUpperCase()}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={`badge rounded-pill ${u.is_active ? 'bg-success' : 'bg-danger'}`}>
+                                                {u.is_active ? "ACTIVE" : "INACTIVE"}
+                                            </span>
+                                        </td>
+                                        <td className="text-end px-4">
+                                            <button
+                                                className={`btn btn-sm ${u.is_active ? 'btn-outline-danger' : 'btn-outline-success'}`}
+                                                onClick={() => toggleActive(u)}
+                                            >
+                                                {u.is_active ? "Deactivate" : "Activate"}
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
-                                {users.length === 0 ? <tr><td colSpan={5} className="muted">No users.</td></tr> : null}
+                                {users.length === 0 && (
+                                    <tr>
+                                        <td colSpan={5} className="text-center py-5 text-muted">
+                                            No users found.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

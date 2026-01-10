@@ -31,82 +31,73 @@ export default function LoginPage() {
     return (
         <>
             <Topbar />
-            <div className="container">
-                <div className="card" style={{ maxWidth: 520 }}>
-                    <h1 style={{ marginTop: 0 }}>Login</h1>
-                    <p className="muted">Login to access the more things .... </p>
-                    <form onSubmit={onSubmit}>
-                        <label>Email</label>
-                        <input className="input" value={email} onChange={e => setEmail(e.target.value)} />
-                        <div style={{ height: 10 }} />
-                        <label>Password</label>
-                        <div style={{ position: "relative" }}>
-                            <input
-                                className="input"
-                                type={showPassword ? "text" : "password"}
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                style={{ paddingRight: 50 }}
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                style={{
-                                    position: "absolute",
-                                    right: 10,
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    border: "none",
-                                    background: "none",
-                                    cursor: "pointer",
-                                    color: "#666",
-                                    fontSize: "0.8rem",
-                                }}
+            <div className="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+                <div className="card shadow-sm border-0 w-100" style={{ maxWidth: 520 }}>
+                    <div className="card-body p-4 p-md-5">
+                        <h1 className="h3 mb-2 text-center">Login</h1>
+                        <p className="text-muted text-center mb-4">Login to access your knowledge base</p>
+
+                        <form onSubmit={onSubmit}>
+                            <div className="mb-3">
+                                <label className="form-label">Email</label>
+                                <input
+                                    className="form-control"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label">Password</label>
+                                <div className="position-relative">
+                                    <input
+                                        className="form-control"
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        style={{ paddingRight: 50 }}
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="btn btn-link text-decoration-none position-absolute top-50 end-0 translate-middle-y text-muted"
+                                        style={{ fontSize: "0.8rem", marginRight: "5px" }}
+                                    >
+                                        {showPassword ? "Hide" : "Show"}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {err && <div className="alert alert-danger py-2">{err}</div>}
+
+                            <div className="d-flex align-items-center justify-content-between mt-4">
+                                <button className="btn btn-primary px-4" disabled={loading}>
+                                    {loading ? "Signing in..." : "Sign in"}
+                                </button>
+                                <a href="/signup" className="text-decoration-none small">Create account</a>
+                            </div>
+
+                            <div className="text-center mt-3">
+                                <a href="/forgot-password" className="text-muted small text-decoration-none">Forgot Password?</a>
+                            </div>
+                        </form>
+
+                        <div className="mt-4">
+                            <div className="d-flex align-items-center my-3">
+                                <div className="flex-grow-1 border-bottom"></div>
+                                <span className="px-3 text-muted small">OR</span>
+                                <div className="flex-grow-1 border-bottom"></div>
+                            </div>
+                            <a
+                                href={`${API_BASE}/auth/google/login`}
+                                className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2"
                             >
-                                {showPassword ? "Hide" : "Show"}
-                            </button>
+                                <Image src="https://www.google.com/favicon.ico" alt="Google" width={16} height={16} />
+                                Sign in with Google
+                            </a>
                         </div>
-                        {err ? <p style={{ color: "#b91c1c" }}>{err}</p> : null}
-                        <div className="g-row" style={{ marginTop: 12 }}>
-                            <button className="btn" disabled={loading}>{loading ? "Signing in..." : "Sign in"}</button>
-                            <span className="muted" style={{ marginLeft: 10 }}>
-                                <a href="/signup" style={{ textDecoration: 'none', color: 'inherit' }}>Create account</a>
-                            </span>
-                        </div>
-                        <div style={{ marginTop: 15, textAlign: 'center' }}>
-                            <a href="/forgot-password" style={{ color: '#666', fontSize: '0.9rem', textDecoration: 'none' }}>Forgot Password?</a>
-                        </div>
-                    </form>
-                    <div style={{ marginTop: 20 }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            margin: '20px 0',
-                            color: '#666'
-                        }}>
-                            <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}></div>
-                            <span style={{ padding: '0 10px', fontSize: '0.9rem' }}>OR</span>
-                            <div style={{ flex: 1, height: 1, background: '#e5e7eb' }}></div>
-                        </div>
-                        <a
-                            href={`${API_BASE}/auth/google/login`}
-                            className="btn"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '10px',
-                                background: '#fff',
-                                color: '#333',
-                                border: '1px solid #d1d5db',
-                                textDecoration: 'none',
-                                width: '100%',
-                                boxSizing: 'border-box'
-                            }}
-                        >
-                            <Image src="https://www.google.com/favicon.ico" alt="Google" width={16} height={16} />
-                            Sign in with Google
-                        </a>
                     </div>
                 </div >
             </div >

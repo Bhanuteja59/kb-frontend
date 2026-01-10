@@ -19,11 +19,11 @@ export default function EmbedPage({ params }) {
     return (
         <div style={{
             width: '100vw',
-            height: '90vh',
+            height: '100vh',
             margin: 0,
             padding: 0,
             overflow: 'hidden',
-            backgroundColor: '#f8fafc' // Light background for visibility
+            backgroundColor: '#f8fafc'
         }}>
             {/* 
                 Render ChatWidget in embedded mode

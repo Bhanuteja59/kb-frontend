@@ -1,4 +1,5 @@
 import "./styles/globals.css";
+import "./loading/loading.css";
 
 export const metadata = {
     title: process.env.NEXT_PUBLIC_APP_NAME || "KB Admin Portal",
@@ -8,6 +9,8 @@ export const metadata = {
 import { AuthProvider } from "./context/AuthContext";
 import WakeUpBackend from "./components/layout/WakeUpBackend";
 
+import GlobalLoader from "./components/layout/GlobalLoader";
+
 export default function RootLayout({ children }) {
     return (
         <html lang="en">
@@ -16,9 +19,11 @@ export default function RootLayout({ children }) {
             </head>
             <body>
                 <AuthProvider>
+                    <GlobalLoader />
                     <WakeUpBackend />
                     {children}
                 </AuthProvider>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossOrigin="anonymous" defer></script>
             </body>
         </html>
     );
