@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
 import Topbar from "../components/layout/Topbar";
-import { uploadFromDrive } from "../lib/api";
-import DrivePicker from "../components/documents/DrivePicker";
 import { API_BASE } from "../lib/constants";
 
 export default function UploadPage() {
@@ -41,17 +39,7 @@ export default function UploadPage() {
         }
     }
 
-    async function driveUpload(picked, accessToken) {
-        setBusy(true); setMsg(null);
-        try {
-            const data = await uploadFromDrive({ file_id: picked.id, access_token: accessToken });
-            setMsg(`Drive file indexed: ${picked.name} → ${data.doc_id} (${data.chunks} chunks)`);
-        } catch (e) {
-            setMsg(e.message || "Drive ingestion failed");
-        } finally {
-            setBusy(false);
-        }
-    }
+
 
     return (
         <>
@@ -91,7 +79,7 @@ export default function UploadPage() {
                 </div>
 
                 <div className="row g-4">
-                    <div className="col-md-6">
+                    <div className="col-md-8">
                         <div className="card shadow-sm border-0 h-100">
                             <div className="card-header bg-white py-3">
                                 <h2 className="h5 m-0">Local Upload</h2>
@@ -128,21 +116,6 @@ export default function UploadPage() {
                         </div>
                     </div>
 
-                    <div className="col-md-6">
-                        <div className="card shadow-sm border-0 h-100">
-                            <div className="card-header bg-white py-3">
-                                <h2 className="h5 m-0">Google Drive Upload</h2>
-                            </div>
-                            <div className="card-body">
-                                <p className="text-muted small mb-3">
-                                    Pick a file from your Drive and index it without downloading it manually.
-                                </p>
-                                <div className="d-grid">
-                                    <DrivePicker onPicked={driveUpload} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {msg && (

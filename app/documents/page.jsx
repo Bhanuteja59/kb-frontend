@@ -3,21 +3,26 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import Topbar from "../components/layout/Topbar";
 import { apiFetch } from "../lib/api";
 import Link from "next/link";
+import DeleteModal from "../components/ui/DeleteModal";
 
 export default function DocumentsPage() {
     const [docs, setDocs] = useState([]);
     const [me, setMe] = useState(null);
     const [q, setQ] = useState("");
-    const [showDeleted, setShowDeleted] = useState(false);
+
+    // Modal State
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [docToDelete, setDocToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const load = useCallback(async () => {
         const meRes = await apiFetch("/auth/me");
         const meData = await meRes.json();
         setMe(meData);
-        const url = meData.role === "user" ? "/documents" : `/documents?include_deleted=${showDeleted ? "true" : "false"}`;
-        const r = await apiFetch(url);
+        // Always fetch documents, no more include_deleted logic needed as hard delete implies gone forever
+        const r = await apiFetch("/documents");
         setDocs(await r.json());
-    }, [showDeleted]);
+    }, []);
 
     useEffect(() => { load().catch(() => { }); }, [load]);
 
@@ -27,15 +32,26 @@ export default function DocumentsPage() {
         return docs.filter(d => d.filename.toLowerCase().includes(qq) || d.doc_id.toLowerCase().includes(qq));
     }, [docs, q]);
 
-    async function onDelete(doc_id) {
-        if (!confirm(`Soft-delete ${doc_id}? You can restore later.`)) return;
-        await apiFetch(`/documents/${doc_id}`, { method: "DELETE" });
-        await load();
+    // Open Modal
+    function onDelete(doc) {
+        setDocToDelete(doc);
+        setDeleteModalOpen(true);
     }
 
-    async function onRestore(doc_id) {
-        await apiFetch(`/documents/${doc_id}/restore`, { method: "POST" });
-        await load();
+    // Confirm Delete
+    async function confirmDelete() {
+        if (!docToDelete) return;
+        setIsDeleting(true);
+        try {
+            await apiFetch(`/documents/${docToDelete.doc_id}`, { method: "DELETE" });
+            await load();
+            setDeleteModalOpen(false);
+            setDocToDelete(null);
+        } catch (error) {
+            alert("Failed to delete: " + error.message);
+        } finally {
+            setIsDeleting(false);
+        }
     }
 
     return (
@@ -63,20 +79,6 @@ export default function DocumentsPage() {
                                 />
                             </div>
                             <div className="d-flex align-items-center gap-3">
-                                {(me?.role === "admin" || me?.role === "manager") && (
-                                    <div className="form-check m-0">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            id="showDeleted"
-                                            checked={showDeleted}
-                                            onChange={e => setShowDeleted(e.target.checked)}
-                                        />
-                                        <label className="form-check-label text-muted" htmlFor="showDeleted">
-                                            Show deleted
-                                        </label>
-                                    </div>
-                                )}
                                 <span className="badge bg-secondary rounded-pill">{filtered.length} docs</span>
                             </div>
                         </div>
@@ -94,7 +96,7 @@ export default function DocumentsPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.map(d => (
-                                        <tr key={d.doc_id} className={d.is_deleted ? "text-muted opacity-50" : ""}>
+                                        <tr key={d.doc_id}>
                                             <td>
                                                 <div className="fw-bold">
                                                     <Link href={`/documents/${d.doc_id}`} className="text-decoration-none text-primary">
@@ -123,26 +125,12 @@ export default function DocumentsPage() {
                                             </td>
                                             <td className="text-end">
                                                 {(me?.role === "admin" || me?.role === "manager") ? (
-                                                    d.is_deleted ? (
-                                                        <div className="d-flex justify-content-end align-items-center gap-2">
-                                                            <span className="text-muted small">
-                                                                by {d.deleted_by || "?"}
-                                                            </span>
-                                                            <button
-                                                                className="btn btn-sm btn-outline-secondary"
-                                                                onClick={() => onRestore(d.doc_id)}
-                                                            >
-                                                                Restore
-                                                            </button>
-                                                        </div>
-                                                    ) : (
-                                                        <button
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => onDelete(d.doc_id)}
-                                                        >
-                                                            Delete
-                                                        </button>
-                                                    )
+                                                    <button
+                                                        className="btn btn-sm btn-outline-danger"
+                                                        onClick={() => onDelete(d)}
+                                                    >
+                                                        Delete
+                                                    </button>
                                                 ) : (
                                                     <span className="text-muted">—</span>
                                                 )}
@@ -162,6 +150,15 @@ export default function DocumentsPage() {
                     </div>
                 </div>
             </div>
+
+            <DeleteModal
+                isOpen={deleteModalOpen}
+                title="Delete Document?"
+                body={`Are you sure you want to delete "${docToDelete?.filename}"?`}
+                onConfirm={confirmDelete}
+                onCancel={() => setDeleteModalOpen(false)}
+                isDeleting={isDeleting}
+            />
         </>
     );
 }

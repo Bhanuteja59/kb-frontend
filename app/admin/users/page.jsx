@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Topbar from "../../components/layout/Topbar";
 import { apiFetch } from "../../lib/api";
+import DeleteModal from "../../components/ui/DeleteModal";
 
 export default function UsersPage() {
     const [users, setUsers] = useState([]);
@@ -41,6 +42,35 @@ export default function UsersPage() {
             body: JSON.stringify({ is_active: !u.is_active })
         });
         await load();
+    }
+
+    // --- Delete Logic ---
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    function onDeleteClick(u) {
+        setUserToDelete(u);
+        setDeleteModalOpen(true);
+    }
+
+    async function confirmDelete() {
+        if (!userToDelete) return;
+        setIsDeleting(true);
+        try {
+            const res = await apiFetch(`/users/${encodeURIComponent(userToDelete.email)}`, { method: "DELETE" });
+            const data = await res.json();
+            if (data.deleted_docs > 0) {
+                alert(`User and ${data.deleted_docs} documents deleted successfully.`);
+            }
+            await load();
+            setDeleteModalOpen(false);
+            setUserToDelete(null);
+        } catch (e) {
+            alert(e.message);
+        } finally {
+            setIsDeleting(false);
+        }
     }
 
     return (
@@ -138,12 +168,20 @@ export default function UsersPage() {
                                             </span>
                                         </td>
                                         <td className="text-end px-4">
-                                            <button
-                                                className={`btn btn-sm ${u.is_active ? 'btn-outline-danger' : 'btn-outline-success'}`}
-                                                onClick={() => toggleActive(u)}
-                                            >
-                                                {u.is_active ? "Deactivate" : "Activate"}
-                                            </button>
+                                            <div className="d-flex justify-content-end gap-2">
+                                                <button
+                                                    className={`btn btn-sm ${u.is_active ? 'btn-outline-warning' : 'btn-outline-success'}`}
+                                                    onClick={() => toggleActive(u)}
+                                                >
+                                                    {u.is_active ? "Deactivate" : "Activate"}
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm btn-outline-danger"
+                                                    onClick={() => onDeleteClick(u)}
+                                                >
+                                                    <i className="bi bi-trash"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -159,6 +197,15 @@ export default function UsersPage() {
                     </div>
                 </div>
             </div>
+
+            <DeleteModal
+                isOpen={deleteModalOpen}
+                title="Delete User & Data?"
+                body={`Are you sure you want to delete ${userToDelete?.email}? This will PERMANENTLY delete the user AND ALL documents they uploaded.`}
+                onConfirm={confirmDelete}
+                onCancel={() => setDeleteModalOpen(false)}
+                isDeleting={isDeleting}
+            />
         </>
     );
 }
