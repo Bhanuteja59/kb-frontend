@@ -29,7 +29,7 @@ export default function UploadPage() {
             });
             if (!res.ok) throw new Error(await res.text());
             const data = await res.json();
-            setMsg(`Uploaded and indexed: ${data.doc_id} (${data.chunks} chunks)`);
+            setMsg(`Uploaded and indexed: ${data.doc_id} (${data.chunk_count} chunks)`);
             setFile(null);
             document.getElementById("file").value = "";
         } catch (e) {
