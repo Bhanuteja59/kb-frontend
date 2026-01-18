@@ -3,35 +3,86 @@ import { useEffect, useState } from "react";
 import Topbar from "../../components/layout/Topbar";
 import { apiFetch } from "../../lib/api";
 import DeleteModal from "../../components/ui/DeleteModal";
+import AlertModal from "../../components/ui/AlertModal";
+import { useAuthContext } from "../../context/AuthContext";
 
 export default function UsersPage() {
+    const { user: currentUser } = useAuthContext();
     const [users, setUsers] = useState([]);
     const [err, setErr] = useState(null);
+    const [successMsg, setSuccessMsg] = useState(null);
 
     const [email, setEmail] = useState("");
     const [full_name, setFullName] = useState("");
     const [role, setRole] = useState("user");
-    const [password, setPassword] = useState("");
+
+    const [alertData, setAlertData] = useState({ isOpen: false, title: "", body: "", type: "danger" });
+
+    const isAdmin = currentUser?.role === 'admin';
 
     async function load() {
-        const r = await apiFetch("/users");
-        setUsers(await r.json());
+        if (!isAdmin) {
+            // Managers might only see users but not edit
+            // For now assuming list_users endpoint has basic fetch
+        }
+        try {
+            const r = await apiFetch("/users");
+            if (r.ok) {
+                setUsers(await r.json());
+            }
+        } catch (e) {
+            setErr("Failed to load users");
+        }
     }
 
-    useEffect(() => { load().catch(e => setErr(e.message)); }, []);
+    useEffect(() => { load(); }, []);
 
-    async function create() {
+    async function invite() {
         setErr(null);
+        setSuccessMsg(null);
         try {
-            await apiFetch("/users", {
+            await apiFetch("/users/invite", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, full_name, role, password })
+                body: JSON.stringify({ email, full_name, role })
             });
-            setEmail(""); setFullName(""); setPassword(""); setRole("user");
+
+            setEmail(""); setFullName(""); setRole("user");
+            setSuccessMsg(`Invitation sent to ${email}`);
             await load();
         } catch (e) {
-            setErr(e.message);
+            // apiFetch throws generic Error(responseText) on failure
+            // Try to parse the response text as JSON to show pretty errors
+            try {
+                const errorData = JSON.parse(e.message);
+                if (errorData.detail) {
+                    const msg = errorData.detail;
+
+                    if (msg.includes("already exists") || msg.includes("already in another")) {
+                        setAlertData({
+                            isOpen: true,
+                            title: "User Already Exists",
+                            body: msg,
+                            type: "danger"
+                        });
+                        return;
+                    }
+
+                    if (msg.includes("Limit Reached")) {
+                        setAlertData({
+                            isOpen: true,
+                            title: "Limit Reached",
+                            body: msg,
+                            type: "danger"
+                        });
+                        return;
+                    }
+                }
+            } catch (parseErr) {
+                // Not JSON, ignore
+            }
+
+            setErr(e.message || "Failed to invite user");
         }
     }
 
@@ -76,89 +127,93 @@ export default function UsersPage() {
     return (
         <>
             <Topbar />
-            <div className="container py-4">
+            <div className="container py-4 fade-in">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h1 className="h2 m-0">Users</h1>
+                    <h1 className="h2 m-0 text-white">Team Management</h1>
+                    {!isAdmin && <span className="badge bg-secondary">View Only</span>}
                 </div>
 
-                <div className="card shadow-sm border-0 mb-4">
-                    <div className="card-header bg-white py-3">
-                        <h2 className="h5 m-0 text-primary">Create User</h2>
-                    </div>
-                    <div className="card-body">
+                {/* Invite Form - Admin Only */}
+                {isAdmin && (
+                    <div className="glass-panel mb-4 p-4">
+                        <div className="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-25 pb-2 mb-4">
+                            <h2 className="h5 mb-0 text-white">Invite New Member</h2>
+                            <div className="text-light opacity-75 small">
+                                <i className="bi bi-info-circle me-1"></i>
+                                Limits: 3 Admins, 10 Managers, 20 Users
+                            </div>
+                        </div>
+
                         <div className="row g-3">
-                            <div className="col-md-6">
-                                <label className="form-label">Email</label>
+                            <div className="col-md-5">
+                                <label className="form-label text-light small">Email Address</label>
                                 <input
                                     className="form-control"
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
-                                    placeholder="user@example.com"
+                                    placeholder="colleague@company.com"
                                 />
                             </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Full Name</label>
+                            <div className="col-md-4">
+                                <label className="form-label text-light small">Full Name</label>
                                 <input
                                     className="form-control"
                                     value={full_name}
                                     onChange={e => setFullName(e.target.value)}
-                                    placeholder="John Doe"
+                                    placeholder="Jane Doe"
                                 />
                             </div>
-                            <div className="col-md-4">
-                                <label className="form-label">Role</label>
+                            <div className="col-md-3">
+                                <label className="form-label text-light small">Role</label>
                                 <select className="form-select" value={role} onChange={e => setRole(e.target.value)}>
                                     <option value="admin">Admin</option>
                                     <option value="manager">Manager</option>
                                     <option value="user">User</option>
                                 </select>
                             </div>
-                            <div className="col-md-5">
-                                <label className="form-label">Password</label>
-                                <input
-                                    className="form-control"
-                                    type="password"
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                            <div className="col-md-3 d-flex align-items-end">
+                            <div className="col-12 text-end">
                                 <button
-                                    className="btn btn-primary w-100"
-                                    onClick={create}
-                                    disabled={!email || !full_name || !password}
+                                    className="btn btn-primary px-4"
+                                    onClick={invite}
+                                    disabled={!email || !full_name}
                                 >
-                                    <i className="bi bi-plus-lg me-2"></i>Create User
+                                    <i className="bi bi-envelope-paper me-2"></i>Send Invitation
                                 </button>
                             </div>
                         </div>
-                        {err && <div className="alert alert-danger mt-3 mb-0">{err}</div>}
+                        {successMsg && <div className="alert alert-success mt-3 mb-0 py-2">{successMsg}</div>}
+                        {err && <div className="alert alert-danger mt-3 mb-0 py-2">{err}</div>}
                     </div>
-                </div>
+                )}
 
-                <div className="card shadow-sm border-0">
-                    <div className="card-header bg-white py-3">
-                        <h2 className="h5 m-0">All Users</h2>
+                {/* Users Table */}
+                <div className="glass-panel overflow-hidden bg-white">
+                    <div className="p-3 border-bottom">
+                        <h2 className="h5 m-0 text-dark fw-bold">
+                            <i className="bi bi-people me-2"></i>Organization Members
+                        </h2>
                     </div>
                     <div className="table-responsive">
-                        <table className="table table-hover align-middle mb-0">
-                            <thead className="table-light">
+                        <table className="table table-hover align-middle mb-0 text-dark">
+                            <thead className="bg-light fw-bold" style={{ color: '#000000' }}>
                                 <tr>
-                                    <th className="px-4 border-0">Email</th>
-                                    <th className="border-0">Name</th>
-                                    <th className="border-0">Role</th>
-                                    <th className="border-0">Status</th>
-                                    <th className="border-0 text-end px-4">Actions</th>
+                                    <th className="px-4 border-0" style={{ color: 'black' }}>User Info</th>
+                                    <th className="border-0" style={{ color: 'black' }}>Role</th>
+                                    <th className="border-0" style={{ color: 'black' }}>Status</th>
+                                    <th className="border-0 text-end px-4" style={{ color: 'black' }}>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.map(u => (
                                     <tr key={u.email}>
-                                        <td className="px-4 fw-bold text-dark">{u.email}</td>
-                                        <td>{u.full_name}</td>
+                                        <td className="px-4">
+                                            <div className="fw-bold text-black">{u.full_name}</div>
+                                            <div className="small text-muted fw-semibold">{u.email}</div>
+                                        </td>
                                         <td>
-                                            <span className={`badge rounded-pill ${u.role === 'admin' ? 'bg-dark' : u.role === 'manager' ? 'bg-info text-dark' : 'bg-secondary'}`}>
+                                            <span className={`badge rounded-pill ${u.role === 'admin' ? 'bg-primary' :
+                                                u.role === 'manager' ? 'bg-info text-dark' : 'bg-secondary'
+                                                }`}>
                                                 {u.role.toUpperCase()}
                                             </span>
                                         </td>
@@ -168,26 +223,34 @@ export default function UsersPage() {
                                             </span>
                                         </td>
                                         <td className="text-end px-4">
-                                            <div className="d-flex justify-content-end gap-2">
-                                                <button
-                                                    className={`btn btn-sm ${u.is_active ? 'btn-outline-warning' : 'btn-outline-success'}`}
-                                                    onClick={() => toggleActive(u)}
-                                                >
-                                                    {u.is_active ? "Deactivate" : "Activate"}
-                                                </button>
-                                                <button
-                                                    className="btn btn-sm btn-outline-danger"
-                                                    onClick={() => onDeleteClick(u)}
-                                                >
-                                                    <i className="bi bi-trash"></i>
-                                                </button>
-                                            </div>
+                                            {isAdmin ? (
+                                                <div className="d-flex justify-content-end gap-2">
+                                                    <button
+                                                        className={`btn btn-sm ${u.is_active ? 'btn-outline-warning' : 'btn-outline-success'} d-flex align-items-center gap-2`}
+                                                        onClick={() => toggleActive(u)}
+                                                        title={u.is_active ? "Deactivate User" : "Activate User"}
+                                                    >
+                                                        <i className={`bi ${u.is_active ? 'bi-pause-circle' : 'bi-play-circle'} text-dark`}></i>
+                                                        <span className="text-black fw-bold">{u.is_active ? "Deactivate" : "Activate"}</span>
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2"
+                                                        onClick={() => onDeleteClick(u)}
+                                                        title="Delete User"
+                                                    >
+                                                        <i className="bi bi-trash text-danger"></i>
+                                                        <span className="text-black fw-bold">Delete</span>
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <span className="text-muted small fst-italic">View Only</span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
                                 {users.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="text-center py-5 text-muted">
+                                        <td colSpan={4} className="text-center py-5 text-muted fw-bold">
                                             No users found.
                                         </td>
                                     </tr>
@@ -200,11 +263,19 @@ export default function UsersPage() {
 
             <DeleteModal
                 isOpen={deleteModalOpen}
-                title="Delete User & Data?"
-                body={`Are you sure you want to delete ${userToDelete?.email}? This will PERMANENTLY delete the user AND ALL documents they uploaded.`}
+                title="Remove Team Member?"
+                body={`Are you sure you want to remove ${userToDelete?.full_name}? This will revoke their access immediately.`}
                 onConfirm={confirmDelete}
                 onCancel={() => setDeleteModalOpen(false)}
                 isDeleting={isDeleting}
+            />
+
+            <AlertModal
+                isOpen={alertData.isOpen}
+                title={alertData.title}
+                body={alertData.body}
+                type={alertData.type}
+                onClose={() => setAlertData({ ...alertData, isOpen: false })}
             />
         </>
     );

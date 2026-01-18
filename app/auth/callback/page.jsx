@@ -4,21 +4,27 @@ import { useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { setToken } from "../../lib/utils/token";
 
+import { useAuthContext } from "../../context/AuthContext";
+
 function CallbackContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { refresh } = useAuthContext();
 
     useEffect(() => {
         const token = searchParams.get("token");
         if (token) {
             setToken(token);
-            router.push("/");
+            // Wait for context to update before directing to home
+            refresh().finally(() => {
+                router.push("/");
+            });
         } else {
             // Handle error or missing token
             console.error("No token found in callback URL");
             router.push("/login?error=auth_failed");
         }
-    }, [searchParams, router]);
+    }, [searchParams, router, refresh]);
 
     return (
         <div style={{
