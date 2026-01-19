@@ -63,7 +63,7 @@ export default function ProfilePage() {
                 <div className="row g-4 justify-content-center">
                     {/* Left Column: User Card */}
                     <div className="col-lg-4">
-                        <div className="glass-panel p-4 text-center h-100">
+                        <div className="glass-panel p-4 text-center h-100 white-glow-shadow">
                             <div className="position-relative d-inline-block mb-4">
                                 <div className="profile-avatar-lg">
                                     {user.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                         <div className="d-flex flex-column gap-4 h-100">
 
                             {/* Organization Overview */}
-                            <div className="glass-panel p-4">
+                            <div className="glass-panel p-4 white-glow-shadow">
                                 <h3 className="h5 text-white fw-bold mb-4 d-flex align-items-center gap-2">
                                     <i className="bi bi-building text-primary"></i> Organization Details
                                 </h3>
@@ -135,7 +135,7 @@ export default function ProfilePage() {
                             </div>
 
                             {/* Usage Stats with Visual Progress */}
-                            <div className="glass-panel p-4 flex-grow-1">
+                            <div className="glass-panel p-4 flex-grow-1 white-glow-shadow">
                                 <h3 className="h5 text-white fw-bold mb-4 d-flex align-items-center gap-2">
                                     <i className="bi bi-graph-up text-primary"></i> Plan Usage
                                 </h3>

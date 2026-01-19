@@ -76,7 +76,7 @@ export default function SettingsPage() {
                     <div className="col-lg-8">
 
                         {/* Profile Section */}
-                        <div className="glass-panel mb-4 p-0">
+                        <div className="glass-panel mb-4 p-0 white-glow-shadow">
                             <div className="border-bottom border-light border-opacity-10 p-4">
                                 <h2 className="h5 fw-bold text-white mb-0">Personal Profile</h2>
                             </div>
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                         </div>
 
                         {/* Organization Section */}
-                        <div className="glass-panel p-0">
+                        <div className="glass-panel p-0 white-glow-shadow">
                             <div className="border-bottom border-light border-opacity-10 p-4">
                                 <h2 className="h5 fw-bold text-white mb-0">Organization Details</h2>
                             </div>
@@ -157,7 +157,7 @@ export default function SettingsPage() {
                     <div className="col-lg-4">
 
                         {/* Usage Card */}
-                        <div className="glass-panel text-white mb-4 p-0">
+                        <div className="glass-panel text-white mb-4 p-0 white-glow-shadow">
                             <div className="p-4 bg-primary bg-opacity-20 rounded-top" style={{ backdropFilter: 'blur(10px)' }}>
                                 <h3 className="h5 fw-bold mb-4">Current Plan</h3>
                                 <div className="d-flex justify-content-between align-items-end mb-2">

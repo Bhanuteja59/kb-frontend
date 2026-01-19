@@ -211,7 +211,7 @@ export default function ChatWidget({ embedded = false, org }) {
                     </div>
 
                     <div className="chat-footer">
-                        Developed by Teja
+                        <a href="https://kb-frontend-plum.vercel.app" target="_blank" rel="noopener noreferrer">Powered by KB RAG Platform</a>
                     </div>
                 </div>
             </div>

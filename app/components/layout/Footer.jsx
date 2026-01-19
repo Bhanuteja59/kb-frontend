@@ -17,12 +17,12 @@ export default function Footer() {
                             Empowering your organization with intelligent knowledge retrieval.
                             Secure, scalable, and tailored tmako your documents.
                         </p>
-                    </div>
+                    </div> 
 
                     <div className="col-lg-2 col-md-6">
                         <h6 className="text-white fw-bold mb-3">Platform</h6>
                         <ul className="list-unstyled text-small">
-                            <li className="mb-2"><a href="/dashboard" className="text-white opacity-75 text-decoration-none hover-white">Dashboard</a></li>
+                            <li className="mb-2"><a href="/" className="text-white opacity-75 text-decoration-none hover-white">Dashboard</a></li>
                             <li className="mb-2"><a href="/admin/chat" className="text-white opacity-75 text-decoration-none hover-white">Chat</a></li>
                             <li className="mb-2"><a href="/documents" className="text-white opacity-75 text-decoration-none hover-white">Documents</a></li>
                         </ul>

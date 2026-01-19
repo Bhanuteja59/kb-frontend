@@ -111,7 +111,7 @@ export default function Topbar() {
                                                 {getInitials(user.full_name)}
                                             </div>
                                             <h6 className="text-white mb-0">{user.full_name}</h6>
-                                            <p className="text-muted small mb-0">{user.email}</p>
+                                            <p className="text-white small mb-0">{user.email}</p>
                                         </div>
                                         <div className="py-2">
                                             <button className="dropdown-item-custom" onClick={() => router.push('/profile')}>
@@ -130,7 +130,7 @@ export default function Topbar() {
                             ) : (
                                 <div className="d-flex gap-2">
                                     <a href={loginUrl} className="btn btn-sm btn-glass text-white border-0 fw-semibold">Sign In</a>
-                                    <Link href="/register" className="btn btn-sm btn-primary fw-semibold rounded-pill px-3">Get Started</Link>
+                                    <Link href="/login" className="btn btn-sm btn-primary fw-semibold rounded-pill px-3">Get Started</Link>
                                 </div>
                             )}
 
@@ -179,7 +179,7 @@ export default function Topbar() {
                             {!user && (
                                 <div className="text-center py-5">
                                     <p className="text-white opacity-50 mb-3">Join us to access the dashboard.</p>
-                                    <Link href="/register" className="btn btn-primary w-100">Get Started</Link>
+                                    <Link href="/login" className="btn btn-primary w-100">Get Started</Link>
                                 </div>
                             )}
                         </div>
@@ -218,7 +218,7 @@ export default function Topbar() {
                     background: transparent;
                     z-index: 1050;
                     transition: all 0.3s ease;
-                    border-bottom: 1px solid transparent;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.79);
                 }
 
                 .topbar.scrolled {

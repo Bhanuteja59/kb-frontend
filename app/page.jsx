@@ -76,32 +76,70 @@ export default function DashboardPage() {
         </Link>
     );
 
-    const StatCard = ({ value, label, icon, color, trend, gradient }) => (
-        <div className="stat-card h-100 border-0 overflow-hidden position-relative">
-            <div className="card-body p-4 text-white">
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <p className="text-white opacity-75 mb-1 text-uppercase small fw-medium letter-spacing-1">{label}</p>
-                        <h3 className="display-4 fw-bold mb-0">{value.toLocaleString()}</h3>
+    const Sparkline = ({ color, data }) => {
+        // Simple SVG sparkline
+        const width = 100;
+        const height = 40;
+        const points = data.map((val, i) => {
+            const x = (i / (data.length - 1)) * width;
+            const y = height - (val * height); // Normalized 0-1 assumed
+            return `${x},${y}`;
+        }).join(' ');
+
+        return (
+            <svg width="100%" height="40" viewBox={`0 0 ${width} ${height}`} className="sparkline" preserveAspectRatio="none">
+                <path d={`M0,${height} L${points} L${width},${height} Z`} fill={color} fillOpacity="0.1" />
+                <polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+        );
+    };
+
+    const StatCard = ({ value, label, icon, color, trend, gradient, suffix = '' }) => {
+        // Mock data for sparkline based on trend
+        const mockTrend = trend > 0
+            ? [0.2, 0.4, 0.3, 0.5, 0.4, 0.7, 0.6, 0.8, 0.9]
+            : [0.9, 0.8, 0.6, 0.7, 0.4, 0.5, 0.3, 0.4, 0.2];
+
+        return (
+            <div className="stat-card h-100 border-0 overflow-hidden position-relative group">
+                <div className="card-body p-4 text-white position-relative z-1">
+                    <div className="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <p className="text-white opacity-75 mb-1 text-uppercase small fw-bold letter-spacing-1" style={{ fontSize: '0.75rem' }}>{label}</p>
+                            <h3 className="display-5 fw-bold mb-0 tracking-tight">
+                                {value}
+                                <span className="fs-6 opacity-50 ms-1 fw-normal">{suffix}</span>
+                            </h3>
+                        </div>
+                        <div className="stat-icon p-2 rounded-3" style={{ background: `${color}15`, color }}>
+                            <i className={`bi ${icon} fs-4`}></i>
+                        </div>
                     </div>
-                    <div className="stat-icon" style={{ color }}>
-                        <i className={`bi ${icon} fs-2 opacity-50`}></i>
+
+                    <div className="d-flex align-items-end justify-content-between">
+                        {trend && (
+                            <div className="d-flex align-items-center gap-1 bg-dark bg-opacity-25 px-2 py-1 rounded-pill border border-white border-opacity-10">
+                                <i className={`bi ${trend > 0 ? 'bi-arrow-up-right' : 'bi-arrow-down-right'} ${trend > 0 ? 'text-success' : 'text-danger'}`}></i>
+                                <span className={`small fw-medium ${trend > 0 ? 'text-success' : 'text-danger'}`}>
+                                    {Math.abs(trend)}%
+                                </span>
+                            </div>
+                        )}
+                        <div style={{ width: '80px', height: '30px', opacity: 0.8 }}>
+                            <Sparkline color={color} data={mockTrend} />
+                        </div>
                     </div>
                 </div>
-                {trend && (
-                    <div className="d-flex align-items-center gap-1">
-                        <i className={`bi ${trend > 0 ? 'bi-arrow-up-right' : 'bi-arrow-down-right'} ${trend > 0 ? 'text-success' : 'text-danger'}`}></i>
-                        <span className={`small ${trend > 0 ? 'text-success' : 'text-danger'}`}>
-                            {trend > 0 ? '+' : ''}{trend}% this month
-                        </span>
-                    </div>
-                )}
+                {/* Background Glow */}
+                <div className="position-absolute top-0 end-0 p-5 rounded-circle blur-3xl opacity-20"
+                    style={{ background: color, filter: 'blur(60px)', transform: 'translate(30%, -30%)' }}></div>
+
+                <div className="stat-gradient" style={{
+                    background: gradient || `linear-gradient(135deg, ${color}20 0%, ${color}05 100%)`
+                }}></div>
             </div>
-            <div className="stat-gradient" style={{
-                background: gradient || `linear-gradient(135deg, ${color}20 0%, ${color}05 100%)`
-            }}></div>
-        </div>
-    );
+        );
+    };
 
     const ProcessStep = ({ step, title, desc, icon }) => (
         <div className="process-step text-center px-3">
@@ -293,25 +331,43 @@ export default function DashboardPage() {
 
                         {/* Recent Activity Sidebar */}
                         <div className="col-xxl-4">
-                            <div className="glass-morphism p-4 h-100 rounded-4">
-                                <h4 className="h5 text-white fw-bold mb-4 d-flex align-items-center gap-2">
-                                    <i className="bi bi-activity"></i>
-                                    Recent Activity
-                                </h4>
-                                <div className="activity-timeline">
+                            <div className="glass-morphism p-4 h-100 rounded-4 position-relative overflow-hidden">
+                                <div className="d-flex justify-content-between align-items-center mb-4 position-relative z-1">
+                                    <h4 className="h5 text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                                        <i className="bi bi-activity text-accent"></i>
+                                        Recent Activity
+                                    </h4>
+                                    <button className="btn btn-sm btn-glass rounded-pill px-3">View All</button>
+                                </div>
+                                <div className="activity-timeline position-relative z-1 custom-scrollbar" style={{ maxHeight: '400px', overflowY: 'auto' }}>
                                     {stats.recentActivity.length > 0 ? stats.recentActivity.map((activity, index) => (
-                                        <div key={index} className="activity-item d-flex gap-3 mb-3 pb-3 border-bottom border-light border-opacity-10">
-                                            <div className="activity-icon" style={{ color: activity.color }}>
-                                                <i className={`bi ${activity.icon} fs-5`}></i>
+                                        <div key={index} className="activity-item position-relative ps-4 mb-4">
+                                            {/* Connecting Line */}
+                                            {index !== stats.recentActivity.length - 1 && (
+                                                <div className="position-absolute top-0 bottom-0 start-0 border-start border-light border-opacity-10" style={{ left: '7px', marginTop: '24px' }}></div>
+                                            )}
+
+                                            {/* Dot */}
+                                            <div className="position-absolute start-0 top-0 rounded-circle border border-dark shadow-sm bg-dark"
+                                                style={{ width: '16px', height: '16px', left: 0, marginTop: '4px' }}>
+                                                <div className="rounded-circle w-100 h-100" style={{ background: activity.color, opacity: 0.8 }}></div>
                                             </div>
-                                            <div className="flex-grow-1">
-                                                <h6 className="text-white fw-semibold mb-1">{activity.title}</h6>
-                                                <p className="text-white opacity-75 small mb-1">{activity.desc}</p>
-                                                <span className="text-white opacity-50 small">{activity.time}</span>
+
+                                            <div className="glass-morphism-sm p-3 rounded-3 ms-2 hover-bg-light transition-all">
+                                                <div className="d-flex justify-content-between align-items-start mb-1">
+                                                    <h6 className="text-white fw-semibold mb-0 fs-6">{activity.title}</h6>
+                                                    <span className="text-white opacity-50 ms-2" style={{ fontSize: '0.7rem' }}>{activity.time}</span>
+                                                </div>
+                                                <p className="text-white opacity-75 small mb-0 lh-sm">{activity.desc}</p>
                                             </div>
                                         </div>
                                     )) : (
-                                        <p className="text-white opacity-50 small text-center py-4">No recent activity</p>
+                                        <div className="text-center py-5">
+                                            <div className="mb-3 opacity-25">
+                                                <i className="bi bi-calendar-x display-4"></i>
+                                            </div>
+                                            <p className="text-white opacity-50 small">No recent activity</p>
+                                        </div>
                                     )}
                                 </div>
                             </div>

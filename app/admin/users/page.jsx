@@ -135,7 +135,7 @@ export default function UsersPage() {
 
                 {/* Invite Form - Admin Only */}
                 {isAdmin && (
-                    <div className="glass-panel mb-4 p-4">
+                    <div className="glass-panel mb-4 p-4 white-glow-shadow">
                         <div className="d-flex justify-content-between align-items-center border-bottom border-light border-opacity-25 pb-2 mb-4">
                             <h2 className="h5 mb-0 text-white">Invite New Member</h2>
                             <div className="text-light opacity-75 small">
@@ -187,70 +187,89 @@ export default function UsersPage() {
                 )}
 
                 {/* Users Table */}
-                <div className="glass-panel overflow-hidden bg-white">
-                    <div className="p-3 border-bottom">
-                        <h2 className="h5 m-0 text-dark fw-bold">
-                            <i className="bi bi-people me-2"></i>Organization Members
+                <div className="glass-panel overflow-hidden bg-white shadow-sm">
+                    <div className="p-4 border-bottom d-flex justify-content-between align-items-center">
+                        <h2 className="h5 m-0 text-dark fw-bold d-flex align-items-center gap-2">
+                            <i className="bi bi-people text-primary"></i>
+                            Organization Members
                         </h2>
+                        <div className="d-flex gap-2">
+                            <input type="text" placeholder="Search members..." className="form-control form-control-sm border-secondary border-opacity-25 text-dark" style={{ maxWidth: '200px' }} />
+                            <button className="btn btn-sm btn-outline-secondary"><i className="bi bi-filter"></i></button>
+                        </div>
                     </div>
                     <div className="table-responsive">
-                        <table className="table table-hover align-middle mb-0 text-dark">
-                            <thead className="bg-light fw-bold" style={{ color: '#000000' }}>
+                        <table className="table align-middle mb-0 text-dark" style={{ borderCollapse: 'separate', borderSpacing: '0' }}>
+                            <thead className="bg-light text-dark small text-uppercase letter-spacing-1">
                                 <tr>
-                                    <th className="px-4 border-0" style={{ color: 'black' }}>User Info</th>
-                                    <th className="border-0" style={{ color: 'black' }}>Role</th>
-                                    <th className="border-0" style={{ color: 'black' }}>Status</th>
-                                    <th className="border-0 text-end px-4" style={{ color: 'black' }}>Actions</th>
+                                    <th className="px-4 py-3 border-bottom opacity-75 fw-bold text-secondary">User Info</th>
+                                    <th className="py-3 border-bottom opacity-75 fw-bold text-secondary">Role</th>
+                                    <th className="py-3 border-bottom opacity-75 fw-bold text-secondary">Status</th>
+                                    <th className="py-3 border-bottom opacity-75 fw-bold text-secondary text-end px-4">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.map(u => (
-                                    <tr key={u.email}>
-                                        <td className="px-4">
-                                            <div className="fw-bold text-black">{u.full_name}</div>
-                                            <div className="small text-muted fw-semibold">{u.email}</div>
+                                    <tr key={u.email} className="hover-bg-light transition-all">
+                                        <td className="px-4 py-3 border-bottom">
+                                            <div className="d-flex align-items-center gap-3">
+                                                <div className="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center text-primary fw-bold shadow-sm" style={{ width: '40px', height: '40px' }}>
+                                                    {u.full_name?.charAt(0) || u.email.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <div className="fw-bold text-dark">{u.full_name}</div>
+                                                    <div className="small text-muted">{u.email}</div>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td>
-                                            <span className={`badge rounded-pill ${u.role === 'admin' ? 'bg-primary' :
-                                                u.role === 'manager' ? 'bg-info text-dark' : 'bg-secondary'
-                                                }`}>
+                                        <td className="py-3 border-bottom">
+                                            <span className={`badge rounded-pill border ${u.role === 'admin' ? 'bg-primary bg-opacity-10 text-primary border-primary border-opacity-25' :
+                                                u.role === 'manager' ? 'bg-info bg-opacity-10 text-info border-info border-opacity-25' :
+                                                    'bg-secondary bg-opacity-10 text-secondary border-secondary border-opacity-25'
+                                                } px-3 py-2 fw-medium`}>
                                                 {u.role.toUpperCase()}
                                             </span>
                                         </td>
-                                        <td>
-                                            <span className={`badge rounded-pill ${u.is_active ? 'bg-success' : 'bg-danger'}`}>
-                                                {u.is_active ? "ACTIVE" : "INACTIVE"}
-                                            </span>
+                                        <td className="py-3 border-bottom">
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div className={`rounded-circle ${u.is_active ? 'bg-success' : 'bg-danger'}`} style={{ width: '8px', height: '8px', boxShadow: u.is_active ? '0 0 10px rgba(34, 197, 94, 0.4)' : 'none' }}></div>
+                                                <span className={`small fw-medium ${u.is_active ? 'text-success' : 'text-danger'}`}>
+                                                    {u.is_active ? "Active" : "Inactive"}
+                                                </span>
+                                            </div>
                                         </td>
-                                        <td className="text-end px-4">
+                                        <td className="text-end px-4 py-3 border-bottom">
                                             {isAdmin ? (
                                                 <div className="d-flex justify-content-end gap-2">
                                                     <button
-                                                        className={`btn btn-sm ${u.is_active ? 'btn-outline-warning' : 'btn-outline-success'} d-flex align-items-center gap-2`}
+                                                        className={`btn btn-sm btn-icon ${u.is_active ? 'btn-outline-warning' : 'btn-outline-success'}`}
                                                         onClick={() => toggleActive(u)}
                                                         title={u.is_active ? "Deactivate User" : "Activate User"}
+                                                        style={{ width: '32px', height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                                                     >
-                                                        <i className={`bi ${u.is_active ? 'bi-pause-circle' : 'bi-play-circle'} text-dark`}></i>
-                                                        <span className="text-black fw-bold">{u.is_active ? "Deactivate" : "Activate"}</span>
+                                                        <i className={`bi ${u.is_active ? 'bi-pause-fill' : 'bi-play-fill'}`}></i>
                                                     </button>
                                                     <button
-                                                        className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2"
+                                                        className="btn btn-sm btn-icon btn-outline-danger"
                                                         onClick={() => onDeleteClick(u)}
                                                         title="Delete User"
+                                                        style={{ width: '32px', height: '32px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                                                     >
-                                                        <i className="bi bi-trash text-danger"></i>
-                                                        <span className="text-black fw-bold">Delete</span>
+                                                        <i className="bi bi-trash-fill"></i>
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <span className="text-muted small fst-italic">View Only</span>
+                                                <span className="text-muted opacity-50 small fst-italic">View Only</span>
                                             )}
                                         </td>
                                     </tr>
                                 ))}
                                 {users.length === 0 && (
                                     <tr>
-                                        <td colSpan={4} className="text-center py-5 text-muted fw-bold">
+                                        <td colSpan={4} className="text-center py-5 text-muted">
+                                            <div className="mb-3 opacity-25">
+                                                <i className="bi bi-people-fill display-4"></i>
+                                            </div>
                                             No users found.
                                         </td>
                                     </tr>
