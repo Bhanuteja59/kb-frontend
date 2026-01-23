@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api";
@@ -8,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, User, Wrench, Megaphone, FileText, AlertTriangle, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 
-export default function SearchPage() {
+function SearchResults() {
     const searchParams = useSearchParams();
     const query = searchParams.get("q") || "";
 
@@ -172,5 +173,13 @@ export default function SearchPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<div className="flex justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <SearchResults />
+        </Suspense>
     );
 }
