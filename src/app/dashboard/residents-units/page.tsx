@@ -118,6 +118,7 @@ export default function ResidentsUnitsPage() {
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Name</th>
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Email</th>
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Unit</th>
+                        <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Status</th>
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Role</th>
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Joined</th>
                         {canWrite && <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right">Actions</th>}
@@ -131,7 +132,17 @@ export default function ResidentsUnitsPage() {
                           <td className="p-4 align-middle font-medium">{u.name}</td>
                           <td className="p-4 align-middle text-muted-foreground">{u.email}</td>
                           <td className="p-4 align-middle">
-                            {u.unit_number ? <Badge variant="outline">{u.unit_number}</Badge> : <span className="text-muted-foreground italic">Unassigned</span>}
+                            {u.unit_number ? (
+                              <div className="flex flex-col">
+                                <Badge variant="outline">{u.unit_number}</Badge>
+                                {u.building_name && <span className="text-[10px] text-muted-foreground">{u.building_name}</span>}
+                              </div>
+                            ) : <span className="text-muted-foreground italic">Unassigned</span>}
+                          </td>
+                          <td className="p-4 align-middle">
+                            <Badge variant={u.status === "active" ? "default" : u.status === "rejected" ? "destructive" : "secondary"} className={u.status === "pending" ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-100" : ""}>
+                              {u.status || "active"}
+                            </Badge>
                           </td>
                           <td className="p-4 align-middle">
                             <Badge variant={u.role === "ADMIN" ? "default" : "secondary"}>{u.role}</Badge>
@@ -140,6 +151,18 @@ export default function ResidentsUnitsPage() {
                           {canWrite && (
                             <td className="p-4 align-middle text-right">
                               <div className="flex justify-end gap-2">
+                                {u.status === "pending" && (
+                                  <Button size="sm" className="h-8 bg-green-600 hover:bg-green-700 text-white" onClick={() => {
+                                    setEditName(u.name);
+                                    setEditUnitId(u.unit_id || "none");
+                                    setEditingUser(u);
+                                    // Auto-open edit dialog which has save (and now approve logic implied or we add explicit approve)
+                                    // Actually better to offer direct Approve or Edit-to-Approve. 
+                                    // Creating a separate approve flow is better UX.
+                                  }}>
+                                    Review
+                                  </Button>
+                                )}
                                 <Button variant="ghost" size="icon" onClick={() => {
                                   setEditName(u.name);
                                   setEditUnitId(u.unit_id || "none");
@@ -286,12 +309,49 @@ export default function ResidentsUnitsPage() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right text-xs text-muted-foreground">Or New</Label>
+              <Input className="col-span-3" placeholder="Enter Unit Number manually (e.g. 101)"
+                onChange={(e) => {
+                  if (e.target.value) setEditUnitId("manual:" + e.target.value);
+                  else setEditUnitId("none");
+                }}
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Status</Label>
+              <Select value={editingUser?.status || "active"} onValueChange={(val) => setEditingUser({ ...editingUser, status: val })}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditingUser(null)}>Cancel</Button>
             <Button disabled={updateUser.isPending} onClick={() => {
               if (editingUser) {
-                updateUser.mutate({ id: editingUser.id, body: { name: editName, unit_id: editUnitId } });
+                let unitStr = "";
+                if (editUnitId && editUnitId.startsWith("manual:")) {
+                  unitStr = editUnitId.replace("manual:", "");
+                } else {
+                  const selectedUnit = unitOptions.find((u: any) => u.id === editUnitId);
+                  unitStr = selectedUnit ? selectedUnit.unit_number : (editUnitId === "none" ? "" : undefined);
+                }
+
+                updateUser.mutate({
+                  id: editingUser.id,
+                  body: {
+                    name: editName,
+                    unit: unitStr,
+                    status: editingUser.status
+                  }
+                });
               }
             }}>Save Changes</Button>
           </DialogFooter>

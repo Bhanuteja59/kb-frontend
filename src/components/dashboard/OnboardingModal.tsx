@@ -52,8 +52,12 @@ export default function OnboardingModal() {
         onSuccess: async () => {
             await qc.invalidateQueries({ queryKey: ["me"] });
             setIsOpen(false);
-            // Ideally trigger session update or force reload?
-            // For now, internal state is enough to close modal.
+            // Force reload to ensure session/state is perfectly synced
+            window.location.reload();
+        },
+        onError: (err: any) => {
+            console.error("Failed to update unit:", err);
+            alert("Failed to update unit: " + err.message);
         }
     });
 
@@ -93,7 +97,12 @@ export default function OnboardingModal() {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={() => updateUser.mutate({ unit_id: selectedUnitId })} disabled={!selectedUnitId || updateUser.isPending}>
+                    <Button onClick={() => {
+                        const selectedUnit = unitOptions.find((u: any) => u.id === selectedUnitId);
+                        if (selectedUnit) {
+                            updateUser.mutate({ unit: selectedUnit.unit_number });
+                        }
+                    }} disabled={!selectedUnitId || updateUser.isPending}>
                         {updateUser.isPending ? "Saving..." : "Confirm Residence"}
                     </Button>
                 </DialogFooter>

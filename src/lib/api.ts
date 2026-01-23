@@ -130,3 +130,12 @@ export async function apiDelete<T>(path: string): Promise<T> {
   return res.json();
 }
 
+
+export const api = {
+  get: apiGet,
+  post: apiPostJson,
+  put: apiPutJson,
+  patch: apiPatchJson,
+  delete: apiDelete,
+  postMultipart: apiPostMultipart
+};

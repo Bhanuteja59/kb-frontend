@@ -22,6 +22,7 @@ const sidebarItems = [
     { name: "Work Orders", href: "/dashboard/work-orders", icon: Wrench },
     { name: "Violations & ARC", href: "/dashboard/violations-arc", icon: Building2 }, // Using Building2 as a placeholder
     { name: "Residents & Units", href: "/dashboard/residents-units", icon: Users },
+    { name: "Add Users", href: "/dashboard/add-users", icon: Users }, // Admin only
     { name: "Dues & Ledger", href: "/dashboard/dues-ledger", icon: FileText }, // Using FileText as a placeholder
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
@@ -49,6 +50,7 @@ export default function Sidebar({ className, onNavigate }: SidebarProps) {
                 <nav className="grid items-start px-3 text-sm font-medium space-y-1">
                     {sidebarItems.map((item, index) => {
                         if (item.name === "Residents & Units" && !isAdmin) return null;
+                        if (item.name === "Add Users" && !isAdmin) return null;
                         if (item.name === "Jobs" && !isAdmin) return null;
 
                         const Icon = item.icon;
