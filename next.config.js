@@ -1,6 +1,6 @@
 // frontend/next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: { serverActions: { allowedOrigins: ["localhost:3000"] } }
+  experimental: { serverActions: { allowedOrigins: ["localhost:3000", "hoa-frontend-beryl.vercel.app"] } }
 };
 module.exports = nextConfig;
