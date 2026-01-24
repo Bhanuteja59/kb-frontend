@@ -44,8 +44,8 @@ export default function AddUsersPage() {
     const { data: users, isLoading } = useQuery({
         queryKey: ["users"],
         queryFn: async () => {
-            const res = await api.get("/users");
-            return res.data;
+            const res = await api.get<any>("/users");
+            return res.data || res;
         },
     });
 
