@@ -111,8 +111,8 @@ export default function ResidentsUnitsPage() {
             </CardHeader>
             <CardContent>
               {users.isLoading ? <p>Loading residents...</p> : (
-                <div className="rounded-md border">
-                  <table className="w-full text-sm">
+                <div className="rounded-md border overflow-x-auto">
+                  <table className="w-full text-sm min-w-[800px]">
                     <thead className="bg-muted/50">
                       <tr className="border-b transition-colors hover:bg-muted/50 text-left">
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Name</th>

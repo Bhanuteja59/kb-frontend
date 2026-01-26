@@ -33,11 +33,13 @@ export const authOptions: NextAuthOptions = {
                         return {
                             id: user.user_id,
                             email: credentials.email,
-                            name: "User",
+                            name: user.name || "User",
                             accessToken: user.access_token,
                             tenantId: user.tenant_id,
                             tenant_slug: user.tenant_slug,
+                            tenant_name: user.tenant_name,
                             roles: user.roles,
+                            isPlatformAdmin: user.is_platform_admin,
                         };
                     }
                     return null;
@@ -61,7 +63,11 @@ export const authOptions: NextAuthOptions = {
                 // @ts-ignore
                 token.tenant_slug = user.tenant_slug;
                 // @ts-ignore
+                token.tenant_name = user.tenant_name;
+                // @ts-ignore
                 token.roles = user.roles;
+                // @ts-ignore
+                token.isPlatformAdmin = user.isPlatformAdmin;
             }
             return token;
         },
@@ -73,7 +79,11 @@ export const authOptions: NextAuthOptions = {
                 // @ts-ignore
                 session.tenant_slug = token.tenant_slug as string;
                 // @ts-ignore
+                session.tenant_name = token.tenant_name as string;
+                // @ts-ignore
                 session.roles = token.roles as string[];
+                // @ts-ignore
+                session.user.isPlatformAdmin = token.isPlatformAdmin as boolean;
             }
             return session;
         },

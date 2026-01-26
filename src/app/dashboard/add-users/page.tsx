@@ -155,15 +155,6 @@ export default function AddUsersPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">Unit (e.g. Block A - 101)</label>
-                                <Input
-                                    value={formData.unit}
-                                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                                    placeholder="Block Name - Unit Number"
-                                />
-                                <p className="text-xs text-muted-foreground">The unit will be created if it doesn't exist.</p>
-                            </div>
-                            <div className="space-y-2">
                                 <label className="text-sm font-medium">Role</label>
                                 <Select
                                     value={formData.role}
@@ -175,9 +166,23 @@ export default function AddUsersPage() {
                                     <SelectContent>
                                         <SelectItem value="USER">Resident</SelectItem>
                                         <SelectItem value="ADMIN">Admin</SelectItem>
+                                        {session?.user?.isPlatformAdmin && (
+                                            <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                                        )}
                                     </SelectContent>
                                 </Select>
                             </div>
+                            {formData.role !== "SUPER_ADMIN" && (
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Unit (e.g. Block A - 101)</label>
+                                    <Input
+                                        value={formData.unit}
+                                        onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                                        placeholder="Block Name - Unit Number"
+                                    />
+                                    <p className="text-xs text-muted-foreground">The unit will be created if it doesn't exist.</p>
+                                </div>
+                            )}
                             <Button className="w-full mt-4" onClick={() => createMutation.mutate(formData)} disabled={createMutation.isPending}>
                                 {createMutation.isPending ? "Creating..." : "Create User"}
                             </Button>
@@ -273,14 +278,6 @@ export default function AddUsersPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">Unit (e.g. Block A - 101)</label>
-                            <Input
-                                value={formData.unit}
-                                onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                                placeholder="Block Name - Unit Number"
-                            />
-                        </div>
-                        <div className="space-y-2">
                             <label className="text-sm font-medium">Role</label>
                             <Select
                                 value={formData.role}
@@ -295,6 +292,16 @@ export default function AddUsersPage() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        {formData.role !== "SUPER_ADMIN" && (
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">Unit (e.g. Block A - 101)</label>
+                                <Input
+                                    value={formData.unit}
+                                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                                    placeholder="Block Name - Unit Number"
+                                />
+                            </div>
+                        )}
                         <Button className="w-full mt-4" onClick={() => updateMutation.mutate(formData)} disabled={updateMutation.isPending}>
                             {updateMutation.isPending ? "Saving..." : "Save Changes"}
                         </Button>

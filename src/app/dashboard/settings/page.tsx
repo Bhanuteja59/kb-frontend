@@ -1,16 +1,55 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { apiGet, apiPostJson } from "@/lib/api";
+import { useState } from "react";
+import { apiGet, apiPostJson, apiPutJson } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { User, Shield, Code, Server } from "lucide-react";
+import { User, Shield, Code, Server, Loader2, Lock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
 
 export default function SettingsPage() {
-  const { data: session }: any = useSession();
+  const { data: session, update }: any = useSession();
   const roles: string[] = session?.roles ?? [];
+
+  const [email, setEmail] = useState(session?.user?.email || "");
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Sync state with session if needed (on initial load)
+  if (email === "" && session?.user?.email) {
+    setEmail(session.user.email);
+  }
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const userId = session?.user?.id;
+      if (!userId) return;
+
+      await apiPutJson(`/users/${userId}`, { email });
+
+      // Notify success
+      alert("Email updated successfully. Please log in again if session expires."); // Simple alert for now
+
+      setIsEditing(false);
+      // Force session update
+      await update({
+        ...session,
+        user: { ...session?.user, email }
+      });
+
+    } catch (e) {
+      console.error(e);
+      alert("Failed to update email. It might be already taken.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="flex-1 space-y-4 p-4 pt-6">
@@ -30,7 +69,27 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="grid gap-2">
               <Label>Email</Label>
-              <Input value={session?.user?.email || ""} readOnly />
+              <div className="flex gap-2">
+                <Input
+                  value={isEditing ? email : session?.user?.email || ""}
+                  onChange={(e) => setEmail(e.target.value)}
+                  readOnly={!isEditing}
+                />
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleSave} disabled={loading}>
+                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)} disabled={loading}>
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Button size="sm" variant="outline" onClick={() => { setEmail(session?.user?.email); setIsEditing(true); }}>
+                    Edit
+                  </Button>
+                )}
+              </div>
             </div>
             <div className="grid gap-2">
               <Label>User ID</Label>
@@ -66,20 +125,14 @@ export default function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Code className="h-5 w-5" />
-              Developer Info
+              <Server className="h-5 w-5" />
+              Community Info
             </CardTitle>
-            <CardDescription>Environment configuration.</CardDescription>
+            <CardDescription>Share this code with your residents.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
-              <Label>Tenant Override</Label>
-              <div className="p-2 border rounded-md bg-muted font-mono text-sm">
-                {process.env.NEXT_PUBLIC_DEV_TENANT || "(not set)"}
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label>Community Code (Share this with Residents)</Label>
+              <Label>Community Code</Label>
               <div className="p-2 border rounded-md bg-muted font-mono text-sm flex justify-between items-center">
                 <span>{session?.tenant_slug || "N/A"}</span>
                 <div className="flex gap-2">
@@ -87,15 +140,89 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
-            <div className="grid gap-2">
-              <Label>API Base URL</Label>
-              <div className="p-2 border rounded-md bg-muted font-mono text-sm">
-                {process.env.NEXT_PUBLIC_API_BASE || "/api/v1"}
-              </div>
-            </div>
+            <p className="text-xs text-muted-foreground">This code is required for residents to register.</p>
           </CardContent>
         </Card>
+
+        <ChangePasswordCard />
       </div>
     </div>
+  );
+}
+
+function ChangePasswordCard() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast({ title: "Error", description: "All fields are required", variant: "destructive" });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Error", description: "New passwords do not match", variant: "destructive" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await apiPutJson("/users/me/password", {
+        current_password: currentPassword,
+        new_password: newPassword
+      });
+      toast({ title: "Success", description: "Password updated successfully" });
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      // Safe error parsing
+      let msg = "Failed to update password";
+      if (err.message) msg = err.message;
+      // The user provided example shows error structure might be nested or just message.
+      // Our api wrapper usually throws Error(message).
+      // If the backend sends { error: { code, message } }, our wrapper usually extracts it.
+      // Let's rely on err.message which should be populated by the API wrapper.
+
+      toast({ title: "Error", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Lock className="h-5 w-5" />
+          Change Password
+        </CardTitle>
+        <CardDescription>Update your login credentials.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid gap-2">
+          <Label>Current Password</Label>
+          <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+        </div>
+        <div className="grid gap-2">
+          <Label>New Password</Label>
+          <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+        </div>
+        <div className="grid gap-2">
+          <Label>Confirm New Password</Label>
+          <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+        </div>
+        <Button onClick={handleChangePassword} disabled={loading} className="w-full">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          Update Password
+        </Button>
+      </CardContent>
+    </Card>
   );
 }

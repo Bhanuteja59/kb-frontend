@@ -46,13 +46,13 @@ export default function Header() {
                         <Sidebar className="w-full border-r-0" onNavigate={() => setOpen(false)} />
                     </SheetContent>
                 </Sheet>
-                <div className="w-full max-w-sm">
+                <div className="hidden md:block w-full max-w-sm">
                     <div className="relative group">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <Input
                             type="search"
-                            placeholder="Search residents, units, work orders..."
-                            className="bg-muted/50 pl-9 md:w-[300px] lg:w-[400px] border-transparent focus:border-primary/30 focus:bg-background transition-all duration-300"
+                            placeholder="Search residents, units..."
+                            className="bg-muted/50 pl-9 w-[300px] lg:w-[400px] border-transparent focus:border-primary/30 focus:bg-background transition-all duration-300"
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     const val = e.currentTarget.value;

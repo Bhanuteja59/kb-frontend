@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "@/lib/api";
+import { useSession } from "next-auth/react";
 import {
   Card,
   CardContent,
@@ -37,10 +38,16 @@ export default function DashboardPage() {
 
   const s = stats.data || {};
 
+  const { data: session }: any = useSession();
+  const userName = session?.user?.name || "User";
+  const communityName = s.community_name || session?.tenant_name || "Community";
+
   return (
     <div className="flex-1 space-y-4 p-4 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight">
+          Welcome to <span className="bg-gradient-to-r from-blue-600 via-primary to-violet-600 bg-clip-text text-transparent drop-shadow-sm font-extrabold">{communityName}</span>
+        </h2>
       </div>
 
       {/* Stats Cards */}
@@ -106,7 +113,7 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-4">
                 {(recentWorkOrders.data ?? []).map((wo: any) => (
-                  <div key={wo.id} className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0">
+                  <div key={wo.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-2 last:border-0 last:pb-0">
                     <div className="space-y-1">
                       <p className="text-sm font-medium leading-none">{wo.title}</p>
                       <p className="text-xs text-muted-foreground">
