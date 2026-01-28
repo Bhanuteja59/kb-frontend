@@ -17,7 +17,7 @@ const nextConfig = {
     /*
     experimental: {
         serverActions: {
-            allowedOrigins: ["localhost:3000", "hoa-frontend-beryl.vercel.app"]
+            allowedOrigins: ["localhost:3000", "kb-frontend-plum.vercel.app"]
         }
     }
     */
