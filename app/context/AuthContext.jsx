@@ -16,16 +16,18 @@ export function AuthProvider({ children }) {
 
     function fetchUser() {
         setLoading(true);
-        getMe()
+        return getMe()
             .then(u => {
                 setUser(u);
                 setError(null);
+                return u;
             })
             .catch(err => {
                 // If it's a 401/403, just user is null, not necessarily an "error" to show
                 console.warn("Auth check failed:", err.message);
                 setUser(null);
                 setError(err.message);
+                throw err;
             })
             .finally(() => setLoading(false));
     }
