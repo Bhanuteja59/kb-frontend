@@ -13,11 +13,14 @@ const nextConfig = {
             },
         ],
     },
+    // Commenting out experimental config to ensure stable build first
+    /*
     experimental: {
         serverActions: {
             allowedOrigins: ["localhost:3000", "hoa-frontend-beryl.vercel.app"]
         }
     }
+    */
 };
 
 module.exports = nextConfig;
