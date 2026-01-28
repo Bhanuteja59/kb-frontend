@@ -106,7 +106,7 @@ export default function Home() {
                 )}
 
                 <div className="py-5 text-center">
-                    <h2 className="section-title fw-bold mb-3">Turn Information into Intelligence</h2>
+                    <h2 className="section-title fw-bold mb-3">Turn Information into Intelligence ...</h2>
                     <p className="hero-subtitle lead text-muted">
                         Our goal is simple: <b>Eliminate the chaos of scattered documents.</b><br />
                         We provide a centralized, secure platform where your organization&apos;s knowledge lives, breathes, and answers questions instantly.
