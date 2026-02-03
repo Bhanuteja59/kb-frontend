@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Topbar from "../components/layout/Topbar";
-import { API_BASE } from "../lib/constants";
+import { uploadDocument } from "../lib/api/documents";
 
 export default function UploadPage() {
     const [file, setFile] = useState(null);
@@ -15,20 +15,7 @@ export default function UploadPage() {
         if (!file) return;
         setBusy(true); setMsg(null);
         try {
-            const token = localStorage.getItem("kb_token");
-            const form = new FormData();
-            form.append("file", file);
-            form.append("source", "local");
-            form.append("chunk_tokens", String(chunkTokens));
-            form.append("overlap_tokens", String(overlapTokens));
-
-            const res = await fetch(`${API_BASE}/ingest`, {
-                method: "POST",
-                headers: token ? { "Authorization": `Bearer ${token}` } : undefined,
-                body: form
-            });
-            if (!res.ok) throw new Error(await res.text());
-            const data = await res.json();
+            const data = await uploadDocument(file, "local", chunkTokens, overlapTokens);
             setMsg(`Uploaded and indexed: ${data.doc_id} (${data.chunk_count} chunks)`);
             setFile(null);
             document.getElementById("file").value = "";
