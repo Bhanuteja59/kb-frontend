@@ -1,8 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Topbar from "../../components/layout/Topbar";
-import { useAuthContext } from "../../context/AuthContext";
-import { ragChat } from "../../lib/api";
+import Topbar from "../components/layout/Topbar";
+import { useAuthContext } from "../context/AuthContext";
+import { ragChat } from "../lib/api";
 import "./chat.css";
 
 
@@ -69,7 +69,7 @@ export default function ChatPage() {
                                 <i className="bi bi-stars fs-4"></i>
                             </div>
                             <div>
-                                <h5 className="mb-0 fw-bold">Admin AI Concierge</h5>
+                                <h5 className="mb-0 fw-bold">AI Concierge</h5>
                                 <div className="d-flex align-items-center gap-2">
                                     <div className="status-dot"></div>
                                     <small className="text-muted fw-medium">Ready to assist</small>
@@ -93,7 +93,7 @@ export default function ChatPage() {
                                 <div className="mb-4 p-4 rounded-circle bg-white shadow-sm border d-inline-flex" style={{ borderColor: 'var(--border)' }}>
                                     <i className="bi bi-chat-square-quote display-3 text-primary opacity-25"></i>
                                 </div>
-                                <h3 className="fw-bold mb-3">Admin Chat Hub</h3>
+                                <h3 className="fw-bold mb-3">How can I help you today?</h3>
                                 <p className="text-muted mb-5 max-w-md fw-medium">I can analyze your documents, answer questions, and generate insights from your knowledge base.</p>
 
                                 <div className="d-flex flex-wrap justify-content-center text-start gap-3" style={{ maxWidth: '800px' }}>

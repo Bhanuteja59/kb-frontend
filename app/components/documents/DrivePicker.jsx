@@ -108,7 +108,7 @@ export default function DrivePicker({ onPicked }) {
                 onClick={openPicker}
                 disabled={!enabled}
             >
-                📂 Pick from Google Drive
+                <i className="bi bi-google me-2"></i>Pick from Google Drive
             </button>
 
             {!enabled && (

@@ -1,0 +1,64 @@
+.upload-page {
+    background-color: var(--bg-page);
+}
+
+.upload-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.upload-header {
+    padding: 1.5rem 2rem;
+    background: rgba(255, 107, 107, 0.02);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-body {
+    padding: 2rem;
+}
+
+.upload-dropzone {
+    background: #f8fafc;
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-dropzone:hover {
+    border-color: var(--primary);
+    background: rgba(255, 107, 107, 0.02);
+}
+
+.upload-dropzone.has-file {
+    border-style: solid;
+    border-color: var(--primary);
+    background: #fff;
+}
+
+.upload-progress-wrapper {
+    margin-top: 1.5rem;
+}
+
+.upload-progress-bar {
+    height: 12px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.upload-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease;
+}

@@ -174,14 +174,27 @@
 .chat-message {
     display: flex;
     width: 100%;
+    animation: messageIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .chat-message.user {
     justify-content: flex-end;
+    animation-name: messageInRight;
 }
 
 .chat-message.assistant {
     justify-content: flex-start;
+    animation-name: messageInLeft;
+}
+
+@keyframes messageInLeft {
+    from { opacity: 0; transform: translateX(-12px) translateY(6px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+}
+
+@keyframes messageInRight {
+    from { opacity: 0; transform: translateX(12px) translateY(6px) scale(0.96); }
+    to   { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
 }
 
 .bubble {
@@ -306,6 +319,22 @@
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Pulse ring */
+.chat-toggle::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid rgba(79, 70, 229, 0.55);
+    animation: chatPulse 2.2s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes chatPulse {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.75); opacity: 0; }
+}
+
 /* Larger button on desktop */
 @media (min-width: 768px) {
     .chat-toggle {
@@ -337,35 +366,83 @@
 /* TYPING INDICATOR */
 .typing {
     display: flex;
-    gap: 6px;
-    padding: 2px 4px;
+    gap: 5px;
+    padding: 4px 6px;
+    align-items: center;
 }
 
 .typing span {
-    width: 6px;
-    height: 6px;
-    background: #94a3b8;
+    width: 7px;
+    height: 7px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
     border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both;
+    animation: typingBounce 1.3s infinite ease-in-out both;
+    opacity: 0.75;
 }
 
-.typing span:nth-child(1) {
-    animation-delay: -0.32s;
-}
+.typing span:nth-child(1) { animation-delay: -0.3s; }
+.typing span:nth-child(2) { animation-delay: -0.15s; }
+.typing span:nth-child(3) { animation-delay: 0s; }
 
-.typing span:nth-child(2) {
-    animation-delay: -0.16s;
-}
-
-@keyframes bounce {
-
-    0%,
-    80%,
-    100% {
-        transform: scale(0);
+@keyframes typingBounce {
+    0%, 80%, 100% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.4;
     }
-
     40% {
-        transform: scale(1);
+        transform: translateY(-6px) scale(1);
+        opacity: 1;
+    }
+}
+
+/* CHAT TOOLTIP */
+.chat-tooltip {
+    position: fixed;
+    bottom: 85px;
+    right: 20px;
+    background: #ffffff;
+    color: #1e293b;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1090;
+    max-width: 250px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+}
+
+.chat-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ffffff;
+}
+
+@media (min-width: 768px) {
+    .chat-tooltip {
+        bottom: 100px;
+        right: 28px;
+    }
+}
+
+.fade-in-up {
+    animation: tooltipFadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tooltipFadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(15px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }

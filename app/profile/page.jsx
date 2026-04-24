@@ -4,6 +4,8 @@ import Topbar from "../components/layout/Topbar";
 import { getMe } from "../lib/api";
 import Link from "next/link";
 import Image from "next/image";
+import "./profile.css";
+
 
 export default function ProfilePage() {
     const [user, setUser] = useState(null);
@@ -42,52 +44,52 @@ export default function ProfilePage() {
     const usagePercent = Math.min(100, (user.doc_count / user.max_docs) * 100);
 
     return (
-        <div className="min-vh-100 pb-5">
+        <div className="light-page min-vh-100 pb-5 d-flex flex-column">
             <Topbar />
 
-            {/* Background Decor */}
-            <div className="background-elements">
-                <div className="bg-blur-1"></div>
-                <div className="bg-blur-2"></div>
-            </div>
-
-            <main className="container pt-4 pt-lg-5 fade-in position-relative z-1">
+            <main className="container pt-4 pt-lg-5 fade-in position-relative flex-grow-1" style={{ zIndex: 1 }}>
                 {/* Header */}
-                <div className="mb-5">
-                    <h1 className="display-5 fw-bold text-white mb-2">My Profile</h1>
-                    <p className="text-white opacity-75 lead">
-                        Manage your account settings and preferences.
-                    </p>
+                <div className="page-header mb-5 border-bottom pb-4">
+                    <div className="d-flex align-items-center gap-3">
+                        <div className="page-header-icon" style={{ background: 'var(--primary)', boxShadow: '0 4px 12px rgba(255, 107, 107, 0.2)' }}>
+                            <i className="bi bi-person-fill text-white" style={{ fontSize: 24 }}></i>
+                        </div>
+                        <div>
+                            <h1 className="h2 fw-bold mb-0 text-dark">My Profile</h1>
+                            <p className="text-muted mb-0 small fw-medium">Manage your account settings and preferences.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="row g-4 justify-content-center">
                     {/* Left Column: User Card */}
                     <div className="col-lg-4">
-                        <div className="glass-panel p-4 text-center h-100 white-glow-shadow">
+                        <div className="page-card p-4 text-center h-100 shadow-sm border" style={{ borderColor: 'var(--border)' }}>
                             <div className="position-relative d-inline-block mb-4">
-                                <div className="profile-avatar-lg">
+                                <div className="profile-avatar-lg shadow-sm border" style={{ 
+                                    width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,107,107,0.1)', 
+                                    color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                    fontSize: '2.5rem', fontWeight: 'bold', borderColor: 'rgba(255,107,107,0.2)' 
+                                }}>
                                     {user.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                                 </div>
-                                <div className="position-absolute bottom-0 end-0 p-2 bg-success border border-4 border-dark rounded-circle"></div>
+                                <div className="position-absolute bottom-0 end-0 p-2 bg-success border border-3 border-white rounded-circle shadow-sm"></div>
                             </div>
 
-                            <h2 className="h4 text-white fw-bold mb-1">{user.full_name}</h2>
-                            <p className="text-white opacity-75 mb-3">{user.email}</p>
+                            <h2 className="h4 fw-bold mb-1 text-dark">{user.full_name}</h2>
+                            <p className="text-muted mb-4 fw-medium">{user.email}</p>
 
                             <div className="d-flex justify-content-center gap-2 mb-4">
-                                <span className={`badge rounded-pill ${user.role === 'admin' ? 'bg-primary' : 'bg-secondary'}`}>
-                                    {user.role?.toUpperCase()}
-                                </span>
-                                <span className="badge rounded-pill bg-white bg-opacity-10 text-white border border-white border-opacity-10">
+                                <span className="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 fw-bold" style={{ fontSize: '0.75rem' }}>
                                     {user.plan?.toUpperCase()} PLAN
                                 </span>
                             </div>
 
                             <div className="d-grid gap-2">
-                                <button className="btn btn-glass w-100">
+                                <Link href="/settings" className="btn btn-dark rounded-pill fw-bold py-2 shadow-sm">
                                     <i className="bi bi-pencil me-2"></i> Edit Profile
-                                </button>
-                                <button className="btn btn-outline-danger w-100 border-opacity-25 text-danger bg-transparent hover-danger">
+                                </Link>
+                                <button className="btn btn-outline-danger rounded-pill fw-bold py-2 shadow-sm">
                                     <i className="bi bi-box-arrow-right me-2"></i> Sign Out
                                 </button>
                             </div>
@@ -99,97 +101,116 @@ export default function ProfilePage() {
                         <div className="d-flex flex-column gap-4 h-100">
 
                             {/* Organization Overview */}
-                            <div className="glass-panel p-4 white-glow-shadow">
-                                <h3 className="h5 text-white fw-bold mb-4 d-flex align-items-center gap-2">
-                                    <i className="bi bi-building text-primary"></i> Organization Details
-                                </h3>
-
-                                <div className="row g-4">
-                                    <div className="col-md-6">
-                                        <div className="info-item">
-                                            <label className="text-white opacity-50 small text-uppercase fw-semibold letter-spacing-1 mb-1">Company Name</label>
-                                            <div className="text-white h5 mb-0">{user.org_name || 'My Organization'}</div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="info-item">
-                                            <label className="text-white opacity-50 small text-uppercase fw-semibold letter-spacing-1 mb-1">Status</label>
-                                            <div className="d-flex align-items-center gap-2 text-success fw-medium">
-                                                <i className="bi bi-check-circle-fill"></i> Active
+                            <div className="page-card shadow-sm border" style={{ borderColor: 'var(--border)' }}>
+                                <div className="page-card-header border-bottom py-3 px-4" style={{ background: 'rgba(255,107,107,0.02)', borderColor: 'var(--border)' }}>
+                                    <h3 className="h6 fw-bold mb-0 d-flex align-items-center gap-2 text-dark">
+                                        <i className="bi bi-building text-primary"></i> Organization Details
+                                    </h3>
+                                </div>
+                                <div className="p-4">
+                                    <div className="row g-4">
+                                        <div className="col-md-6">
+                                            <div className="info-item">
+                                                <label className="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Company Name</label>
+                                                <div className="h5 mb-0 fw-bold text-dark">{user.org_name || 'My Organization'}</div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="info-item">
-                                            <label className="text-white opacity-50 small text-uppercase fw-semibold letter-spacing-1 mb-1">Member Since</label>
-                                            <div className="text-white h5 mb-0">Jan 2026</div> {/* Placeholder for created_at if not available */}
+                                        <div className="col-md-6">
+                                            <div className="info-item">
+                                                <label className="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Status</label>
+                                                <div className="d-flex align-items-center gap-2 text-success fw-bold">
+                                                    <i className="bi bi-check-circle-fill"></i> Active
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="info-item">
-                                            <label className="text-white opacity-50 small text-uppercase fw-semibold letter-spacing-1 mb-1">API Access</label>
-                                            <div className="text-white h5 mb-0">Enabled</div>
+                                        <div className="col-md-6">
+                                            <div className="info-item">
+                                                <label className="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Member Since</label>
+                                                <div className="h5 mb-0 fw-bold text-dark">{new Date(user.created_at).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="info-item">
+                                                <label className="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">API Access</label>
+                                                <div className="h5 mb-0 fw-bold text-dark">Enabled</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Usage Stats with Visual Progress */}
-                            <div className="glass-panel p-4 flex-grow-1 white-glow-shadow">
-                                <h3 className="h5 text-white fw-bold mb-4 d-flex align-items-center gap-2">
-                                    <i className="bi bi-graph-up text-primary"></i> Plan Usage
-                                </h3>
-
-                                {/* Documents Usage */}
-                                <div className="mb-4">
-                                    <div className="d-flex justify-content-between align-items-end mb-2">
-                                        <label className="text-white fw-medium">Document Storage</label>
-                                        <span className="text-white opacity-75 small">
-                                            <strong className="text-white">{user.doc_count}</strong> / {user.max_docs} Docs
-                                        </span>
-                                    </div>
-                                    <div className="progress bg-white bg-opacity-10" style={{ height: '8px' }}>
-                                        <div
-                                            className={`progress-bar ${usagePercent > 90 ? 'bg-danger' : 'bg-primary'}`}
-                                            role="progressbar"
-                                            style={{ width: `${usagePercent}%` }}
-                                            aria-valuenow={usagePercent}
-                                            aria-valuemin="0"
-                                            aria-valuemax="100"
-                                        ></div>
-                                    </div>
+                            <div className="page-card shadow-sm border flex-grow-1" style={{ borderColor: 'var(--border)' }}>
+                                <div className="page-card-header border-bottom py-3 px-4" style={{ background: 'rgba(255,107,107,0.02)', borderColor: 'var(--border)' }}>
+                                    <h3 className="h6 fw-bold mb-0 d-flex align-items-center gap-2 text-dark">
+                                        <i className="bi bi-graph-up text-primary"></i> Plan Usage
+                                    </h3>
                                 </div>
+                                <div className="p-4">
+                                    {/* Documents Usage */}
+                                    <div className="mb-4">
+                                        <div className="d-flex justify-content-between align-items-end mb-2">
+                                            <label className="fw-bold text-dark">Document Storage</label>
+                                            <span className="text-muted small fw-bold">
+                                                <strong className="text-dark">{user.doc_count}</strong> / {user.max_docs} Docs
+                                            </span>
+                                        </div>
+                                        <div className="progress border" style={{ height: '12px', background: '#f1f5f9', borderRadius: '10px', borderColor: 'var(--border)' }}>
+                                            <div
+                                                className={`progress-bar ${usagePercent > 90 ? 'bg-danger' : 'bg-primary'}`}
+                                                role="progressbar"
+                                                style={{ width: `${usagePercent}%`, borderRadius: '10px' }}
+                                                aria-valuenow={usagePercent}
+                                                aria-valuemin="0"
+                                                aria-valuemax="100"
+                                            ></div>
+                                        </div>
+                                    </div>
 
-                                {/* Feature Limits Grid */}
-                                <div className="row g-3 mt-2">
-                                    <div className="col-sm-6">
-                                        <div className="feature-limit-card p-3 rounded-3 bg-white border-0 shadow-sm">
-                                            <div className="d-flex align-items-center gap-3">
-                                                <div className="feature-icon text-info bg-info bg-opacity-10 p-2 rounded">
-                                                    <i className="bi bi-chat-left-text"></i>
+                                    {/* Feature Limits Grid */}
+                                    <div className="row g-3 mt-2">
+                                        <div className="col-sm-6">
+                                            <div
+                                                className="feature-limit-card p-3 rounded-3 bg-light border"
+                                                style={{ borderColor: "var(--border)" }}
+                                            >
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div
+                                                        className="rounded-3 d-flex align-items-center justify-content-center shadow-sm bg-white border"
+                                                        style={{ width: 38, height: 38, borderColor: 'var(--border)', flexShrink: 0 }}
+                                                    >
+                                                        <i className="bi bi-chat-left-text" style={{ color: "var(--primary)" }}></i>
+                                                    </div>
+                                                    <div>
+                                                        <div className="small fw-bold text-dark">Chat Queries</div>
+                                                        <div className="text-muted" style={{ fontSize: "0.75rem", fontWeight: '600' }}>Unlimited</div>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div className="text-black small fw-bolder">Chat Queries</div>
-                                                    <div className="text-black extra-small fw-bolder">Unlimited</div>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div
+                                                className="feature-limit-card p-3 rounded-3 bg-light border"
+                                                style={{ borderColor: "var(--border)" }}
+                                            >
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div
+                                                        className="rounded-3 d-flex align-items-center justify-content-center shadow-sm bg-white border"
+                                                        style={{ width: 38, height: 38, borderColor: 'var(--border)', flexShrink: 0 }}
+                                                    >
+                                                        <i className="bi bi-hdd-network" style={{ color: "var(--primary)" }}></i>
+                                                    </div>
+                                                    <div>
+                                                        <div className="small fw-bold text-dark">Storage Used</div>
+                                                        <div className="text-muted" style={{ fontSize: "0.75rem", fontWeight: '600' }}>
+                                                            {((user.total_storage_bytes ?? 0) / (1024 * 1024)).toFixed(1)} MB
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-sm-6">
-                                        <div className="feature-limit-card p-3 rounded-3 bg-white border-0 shadow-sm">
-                                            <div className="d-flex align-items-center gap-3">
-                                                <div className="feature-icon text-warning bg-warning bg-opacity-10 p-2 rounded">
-                                                    <i className="bi bi-people"></i>
-                                                </div>
-                                                <div>
-                                                    <div className="text-black small fw-bolder">Team Seats</div>
-                                                    <div className="text-black extra-small fw-bolder">3/5 Used</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -197,39 +218,16 @@ export default function ProfilePage() {
 
                 {/* Additional Settings Link */}
                 <div className="text-center mt-5">
-                    <p className="text-white opacity-50 small">
+                    <p className="text-muted small fw-medium">
                         Need to change your password or security settings?
-                        <Link href="/settings" className="text-primary ms-1 text-decoration-none hover-underline">
+                        <Link href="/settings" className="text-primary ms-1 text-decoration-none fw-bold">
                             Go to Settings
                         </Link>
                     </p>
                 </div>
             </main>
-
-            <style jsx>{`
-                .profile-avatar-lg {
-                    width: 120px;
-                    height: 120px;
-                    background: var(--primary-gradient);
-                    border-radius: 24px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 3rem;
-                    font-weight: 700;
-                    color: white;
-                    box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
-                }
-
-                .hover-danger:hover {
-                    background: rgba(220, 53, 69, 0.1) !important;
-                    border-color: #dc3545 !important;
-                }
-
-                .extra-small {
-                    font-size: 0.75rem;
-                }
-            `}</style>
         </div>
+    );
+}
     );
 }

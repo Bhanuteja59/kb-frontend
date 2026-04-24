@@ -1,30 +1,54 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import LoadingPage from "../../loading/page";
+import { useEffect, useRef, useState } from "react";
 
-import { useAuthContext } from "../../context/AuthContext";
-
+/**
+ * GlobalLoader — shows a thin progress bar at the top of the page
+ * during route transitions. Does NOT block the auth check.
+ */
 export default function GlobalLoader() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [isLoading, setIsLoading] = useState(false);
-    const { loading: authLoading } = useAuthContext();
+    const [visible, setVisible] = useState(false);
+    const [width, setWidth] = useState(0);
+    const timerRef = useRef(null);
 
     useEffect(() => {
-        // Trigger loading on mount and on route change
-        setIsLoading(true);
+        // Start progress bar on route change
+        setVisible(true);
+        setWidth(20);
 
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000); // reduced to 1.0 second for snappiness
+        // Simulate progress
+        timerRef.current = setTimeout(() => setWidth(60), 150);
+        const t2 = setTimeout(() => setWidth(85), 400);
+        const t3 = setTimeout(() => {
+            setWidth(100);
+            setTimeout(() => setVisible(false), 300);
+        }, 700);
 
-        return () => clearTimeout(timer);
+        return () => {
+            clearTimeout(timerRef.current);
+            clearTimeout(t2);
+            clearTimeout(t3);
+        };
     }, [pathname, searchParams]);
 
-    // Show loader if EITHER local route timer is running OR Auth is initialising
-    if (isLoading || authLoading) return <LoadingPage />;
+    if (!visible) return null;
 
-    return null;
+    return (
+        <div
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                zIndex: 9999,
+                height: 3,
+                width: `${width}%`,
+                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                transition: "width 0.3s ease",
+                boxShadow: "0 0 8px rgba(79, 70, 229, 0.6)",
+            }}
+        />
+    );
 }

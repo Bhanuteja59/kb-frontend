@@ -8,7 +8,7 @@ import "./ChatWidget.css";
 export default function ChatWidget({ embedded = false, org }) {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { id: "welcome", role: "assistant", text: "👋 Hi! Ask me anything." },
+        { id: "welcome", role: "assistant", text: "Hi! Ask me anything about your knowledge base." },
     ]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function ChatWidget({ embedded = false, org }) {
 
         async function fetchOrgInfo() {
             try {
-                const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+                const baseUrl = process.env.NEXT_PUBLIC_API_BASE || process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
                 const res = await fetch(`${baseUrl}/public/org/${org}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -128,7 +128,7 @@ export default function ChatWidget({ embedded = false, org }) {
                     padding: '20px',
                     textAlign: 'center'
                 }}>
-                    <div style={{ fontSize: '48px', marginBottom: '16px' }}>🚫</div>
+                    <i className="bi bi-slash-circle" style={{ fontSize: '48px', color: '#94a3b8', marginBottom: '16px', display: 'block' }}></i>
                     <h2 style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>Bot Unavailable</h2>
                     <p style={{ fontSize: '16px', color: '#64748b', maxWidth: '400px', lineHeight: '1.5' }}>
                         The Organization ID provided <code>({org})</code> is invalid or active access credentials are missing.
@@ -157,8 +157,9 @@ export default function ChatWidget({ embedded = false, org }) {
                             <button
                                 className="close-btn"
                                 onClick={() => setIsOpen(false)}
+                                aria-label="Close chat"
                             >
-                                ✕
+                                <i className="bi bi-x-lg"></i>
                             </button>
                         )}
                     </div>
@@ -218,20 +219,27 @@ export default function ChatWidget({ embedded = false, org }) {
 
             {/* TOGGLE BUTTON */}
             {!embedded && (
-                <button
-                    className="chat-toggle"
-                    onClick={() => setIsOpen((v) => !v)}
-                >
-                    {isOpen ? (
-                        <svg viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                        </svg>
-                    ) : (
-                        <svg viewBox="0 0 24 24" width="24" height="24">
-                            <path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-                        </svg>
+                <>
+                    {!isOpen && (
+                        <div className="chat-tooltip shadow-lg fade-in-up">
+                            Hi, I am your chatbot! 👋<br/>Ask me anything about our knowledge base.
+                        </div>
                     )}
-                </button>
+                    <button
+                        className="chat-toggle"
+                        onClick={() => setIsOpen((v) => !v)}
+                    >
+                        {isOpen ? (
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                            </svg>
+                        ) : (
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+                            </svg>
+                        )}
+                    </button>
+                </>
             )}
         </>
     );

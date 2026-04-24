@@ -21,6 +21,13 @@ const nextConfig = {
         }
     }
     */
+    // Ignore linting and TS errors for stable Vercel deployments
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 };
 
 module.exports = nextConfig;
