@@ -290,6 +290,8 @@ function UsersContent() {
                     onCancel={() => setDeleteModalOpen(false)}
                     isDeleting={isDeleting}
                 />
+            </div>
+        </div>
     );
 }
 
