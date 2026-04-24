@@ -1,5 +1,7 @@
 "use client";
 import React from 'react';
+import "./Footer.css";
+
 
 export default function Footer() {
     return (
@@ -56,12 +58,6 @@ export default function Footer() {
                     </ul>
                 </div>
             </div>
-
-            <style jsx>{`
-                .hover-white:hover {
-                    color: #fff !important;
-                }
-            `}</style>
         </footer>
     );
 }

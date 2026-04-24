@@ -1,254 +1,293 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import "./landing.css";
 import Topbar from "./components/layout/Topbar";
-import { apiFetch } from "./lib/api";
 import ChatWidget from "./components/chat/ChatWidget";
 import Link from "next/link";
+import { useAuth } from "./hooks/useAuth";
+
+const services = [
+    {
+        icon: "bi-cloud-arrow-up",
+        title: "Smart Data Ingestion",
+        desc: "Upload PDFs, DOCX, or connect directly to Google Drive. Documents are automatically sanitized, chunked, and indexed for immediate retrieval.",
+    },
+    {
+        icon: "bi-chat-left-dots",
+        title: "Context-Aware Intelligence",
+        desc: "Our engine retrieves precise paragraphs from your proprietary data, grounding every answer in absolute truth rather than generic training data.",
+    },
+    {
+        icon: "bi-shield-lock",
+        title: "Enterprise Grade Security",
+        desc: "Your data is encrypted at rest and in transit. Private RAG architecture ensures your proprietary knowledge never leaks into public models.",
+    },
+    {
+        icon: "bi-bar-chart-line",
+        title: "Comprehensive Audit Logs",
+        desc: "Administrators gain full visibility into system usage, document processing limits, and team engagement metrics across the platform.",
+    },
+    {
+        icon: "bi-code-slash",
+        title: "Frictionless Integration",
+        desc: "Embed our highly secure chat interface into any internal portal or website with a single, lightweight JavaScript snippet.",
+    },
+];
+
+const quickActions = [
+    { href: "/documents", icon: "bi-folder2-open", label: "Documents", sub: "Browse & search" },
+    { href: "/upload", icon: "bi-cloud-upload", label: "Upload", sub: "Add new files" },
+    { href: "/pricing", icon: "bi-gem", label: "Pricing", sub: "View plans" },
+];
 
 export default function Home() {
-    const [me, setMe] = useState(null);
-
+    const { user, loading } = useAuth();
 
     useEffect(() => {
-        apiFetch("/auth/me")
-            .then(r => r.json())
-            .then(u => {
-                setMe(u);
-            })
-            .catch(() => { });
-    }, []);
+        if (loading) return;
+        const observer = new IntersectionObserver(
+            entries => entries.forEach(e => {
+                if (e.isIntersecting) e.target.classList.add("visible");
+            }),
+            { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+        );
+        document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+        return () => observer.disconnect();
+    }, [loading]);
+
+    if (loading) return <Topbar />;
 
     return (
-        <>
+        <div className="light-page d-flex flex-column">
             <Topbar />
-            <div className="container py-5">
-
-                {/* HERO SECTION */}
-                {!me ? (
-                    <div className="hero-section text-center fade-in-up">
-                        <h1 className="hero-title display-4 fw-bold mb-4 gradient-text">Your Enterprise Knowledge,<br />Instantly Accessible.</h1>
-                        <p className="hero-subtitle lead mb-4 text-muted">
-                            Transform your documents into an intelligent knowledge base.
-                            Securely ingest data, manage access, and empower your team with AI-driven answers.
-                        </p>
-                        <div className="d-flex gap-3 justify-content-center mb-4">
-                            <Link href="/login" className="btn btn-gradient btn-lg pulse">
-                                🚀 Get Started
-                            </Link>
-                            <a href="https://pleach.in" target="_blank" className="btn btn-outline-primary btn-lg hover-lift">
-                                Learn More
-                            </a>
+            <div className="background-elements"></div>
+            
+            <div className="container py-5 position-relative z-index-1">
+                {!user ? (
+                    /* ---- LANDING HERO ---- */
+                    <div className="row align-items-center py-5 fade-in-up">
+                        <div className="col-lg-6 pe-lg-5 mb-5 mb-lg-0">
+                            <div className="section-badge mb-4 d-inline-flex align-items-center gap-2" style={{ padding: '6px 16px', borderRadius: '50px', background: 'rgba(255, 107, 107, 0.1)', color: '#FF6B6B', fontWeight: 600, fontSize: '0.85rem' }}>
+                                <i className="bi bi-shield-check"></i> Enterprise Knowledge Management
+                            </div>
+                            <h1 className="hero-title">
+                                Centralize <br />
+                                <span className="highlight">Your Intelligence.</span>
+                            </h1>
+                            <p className="lead text-muted mb-5" style={{ maxWidth: '540px', fontSize: '1.2rem', lineHeight: 1.6 }}>
+                                Securely transform your scattered documentation into an intelligent, instantly accessible knowledge base. Empower your workforce with precise answers derived exclusively from your proprietary data.
+                            </p>
+                            <div className="d-flex gap-3 flex-wrap">
+                                <Link href="/login" className="btn btn-gradient btn-lg d-inline-flex align-items-center gap-2">
+                                    Deploy Now <i className="bi bi-arrow-right"></i>
+                                </Link>
+                                <a href="#features" className="btn btn-outline-light btn-lg" style={{ border: '1px solid rgba(255,255,255,0.2)', color: '#ccd6f6' }}>
+                                    Explore Features
+                                </a>
+                            </div>
+                            
+                            <div className="mt-5 pt-4 border-top" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                                <p className="text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.1em', color: '#8892b0' }}>Trusted by Industry Leaders</p>
+                                <div className="d-flex gap-4 opacity-50">
+                                    <i className="bi bi-microsoft fs-4"></i>
+                                    <i className="bi bi-google fs-4"></i>
+                                    <i className="bi bi-amazon fs-4"></i>
+                                    <i className="bi bi-apple fs-4"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div className="d-flex gap-3 justify-content-center flex-wrap mt-4">
-                            <span className="trust-badge">🔒 256-bit Encryption</span>
-                            <span className="trust-badge">✓ GDPR Compliant</span>
-                            <span className="trust-badge">⚡ 99.9% Uptime</span>
+                        <div className="col-lg-6">
+                            <div className="position-relative">
+                                {/* The user should place the hero_data_nodes image here */}
+                                <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.15)', border: '1px solid var(--border)' }}>
+                                    <img 
+                                        src="/images/hero_bg.png" 
+                                        alt="Data Nodes Visualization" 
+                                        style={{ width: '100%', height: 'auto', display: 'block', backgroundColor: 'var(--bg-surface)', minHeight: '400px' }}
+                                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80'; }}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 ) : (
+                    /* ---- AUTHENTICATED DASHBOARD ---- */
                     <div className="fade-in">
-                        <div className="hero-section text-center mb-5">
-                            <h1 className="hero-title mb-3" style={{ fontSize: "2.5rem" }}>
-                                Welcome back, {me.full_name?.split(' ')[0]}
+                         <div className="mb-5 border-bottom pb-4" style={{ borderColor: 'var(--border)' }}>
+                            <h1 className="h3 fw-bold mb-1">
+                                Dashboard Overview
                             </h1>
-                            <p className="hero-subtitle lead text-muted">
-                                You are signed in as <b>{me.role}</b> at <b>{me.org_name || "Your Organization"}</b>.
+                            <p className="text-muted mb-0">
+                                Welcome back, {user.full_name?.split(" ")[0]}. You are connected to <strong>{user.org_name || "your organization"}</strong>.
                             </p>
                         </div>
 
-                        {/* DASHBOARD STATS */}
-                        <div className="row mb-5">
-                            <div className="col-md-4 mb-4 scale-in">
-                                <div className="glass-card h-100 p-4 hover-lift">
-                                    <div className="stat-value display-4 fw-bold gradient-text">{me.doc_count || 0}</div>
-                                    <div className="stat-label text-muted">📄 Documents Indexed</div>
+                        {/* Stats */}
+                        <div className="row g-4 mb-5">
+                            {[
+                                { icon: "bi-file-earmark-text", label: "Documents Indexed", value: user.doc_count ?? 0 },
+                                { icon: "bi-hdd-network", label: "Storage Capacity", value: user.max_docs ?? 10 },
+                                { icon: "bi-shield-check", label: "Security Tier", value: user.plan ?? "Standard", upper: true },
+                            ].map(({ icon, label, value, upper }, i) => (
+                                <div className="col-md-4" key={label}>
+                                    <div
+                                        className="glass-panel h-100 p-4 reveal"
+                                        style={{ transitionDelay: `${i * 0.1}s` }}
+                                    >
+                                        <div className="d-flex align-items-center gap-3 mb-3">
+                                            <div
+                                                className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                                                style={{ width: 44, height: 44, background: "rgba(255, 107, 107, 0.1)" }}
+                                            >
+                                                <i className={`bi ${icon} text-primary fs-5`}></i>
+                                            </div>
+                                            <span className="text-muted small fw-bold text-uppercase" style={{ letterSpacing: '0.05em' }}>{label}</span>
+                                        </div>
+                                        <div className={`display-6 fw-bold stat-value ${upper ? "text-uppercase" : ""}`}>
+                                            {value}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4 mb-4 scale-in" style={{ animationDelay: '0.1s' }}>
-                                <div className="glass-card h-100 p-4 hover-lift">
-                                    <div className="stat-value display-4 fw-bold gradient-text">{me.max_docs || 10}</div>
-                                    <div className="stat-label text-muted">📊 Document Limit</div>
-                                </div>
-                            </div>
-                            <div className="col-md-4 mb-4 scale-in" style={{ animationDelay: '0.2s' }}>
-                                <div className="glass-card h-100 p-4 hover-lift">
-                                    <div className="stat-value display-4 fw-bold gradient-text">{me.plan ? me.plan.toUpperCase() : "FREE"}</div>
-                                    <div className="stat-label text-muted">⭐ Current Plan</div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
-                        {/* USAGE BAR */}
-                        {me.plan && (
-                            <div className="card shadow-sm border-0 mb-5 border-start border-4 border-primary p-4">
+                        {/* Usage bar */}
+                        {user.plan && (
+                            <div className="glass-panel mb-5 p-4 reveal">
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h3 className="h5 m-0">Storage Usage</h3>
-                                    <Link href="/pricing" className="text-primary fw-bold text-decoration-none">Upgrade Plan &rarr;</Link>
+                                    <h3 className="h6 fw-bold m-0">System Resource Usage</h3>
+                                    <Link href="/pricing" className="text-primary small fw-bold text-decoration-none">
+                                        Manage Subscription <i className="bi bi-arrow-right ms-1"></i>
+                                    </Link>
                                 </div>
-                                <div className="progress" style={{ height: 12 }}>
+                                <div className="progress" style={{ height: 8, borderRadius: 4, background: 'var(--border)' }}>
                                     <div
-                                        className={`progress-bar ${me.doc_count >= me.max_docs ? "bg-danger" : "bg-primary"}`}
+                                        className={`progress-bar ${(user.doc_count ?? 0) >= (user.max_docs ?? 10) ? "bg-danger" : "bg-primary"}`}
                                         role="progressbar"
-                                        style={{
-                                            width: `${Math.min((me.doc_count / me.max_docs) * 100, 100)}%`,
-                                        }}
-                                        aria-valuenow={me.doc_count}
+                                        style={{ width: `${Math.min(((user.doc_count ?? 0) / (user.max_docs ?? 10)) * 100, 100)}%`, borderRadius: 4 }}
+                                        aria-valuenow={user.doc_count}
                                         aria-valuemin="0"
-                                        aria-valuemax={me.max_docs}
+                                        aria-valuemax={user.max_docs}
                                     />
                                 </div>
-                                <div className="mt-2 small text-muted">
-                                    Using <b>{me.doc_count}</b> of {me.max_docs} available document slots.
+                                <div className="mt-3 small text-muted">
+                                    Utilizing <strong style={{color: 'var(--text-main)'}}>{user.doc_count ?? 0}</strong> out of <strong style={{color: 'var(--text-main)'}}>{user.max_docs ?? 10}</strong> available document nodes.
                                 </div>
                             </div>
                         )}
+
+                        {/* Quick actions */}
+                        <h2 className="h6 fw-bold text-uppercase text-muted mb-4" style={{ letterSpacing: "0.06em" }}>Quick Actions</h2>
+                        <div className="row g-3 mb-5">
+                            {quickActions
+                                .map((a, i) => (
+                                    <div className="col-6 col-md-4" key={a.href}>
+                                        <Link href={a.href} className="text-decoration-none">
+                                            <div
+                                                className="glass-panel p-4 d-flex align-items-center gap-3 hover-lift h-100 reveal"
+                                                style={{ transitionDelay: `${i * 0.08}s` }}
+                                            >
+                                                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 107, 107, 0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <i className={`bi ${a.icon} fs-4 text-primary`}></i>
+                                                </div>
+                                                <div>
+                                                    <div className="fw-bold mb-1">{a.label}</div>
+                                                    <div className="text-muted" style={{ fontSize: "0.8rem" }}>{a.sub}</div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                ))}
+                        </div>
                     </div>
                 )}
 
-                <div className="py-5 text-center">
-                    <h2 className="section-title fw-bold mb-3">Turn Information into Intelligence ...</h2>
-                    <p className="hero-subtitle lead text-muted">
-                        Our goal is simple: <b>Eliminate the chaos of scattered documents.</b><br />
-                        We provide a centralized, secure platform where your organization&apos;s knowledge lives, breathes, and answers questions instantly.
-                    </p>
-                </div>
-
-                {/* SERVICES GRID */}
-                <h2 className="section-title fw-bold mb-4 gradient-text">Comprehensive Services</h2>
-                <div className="row g-4 mb-5">
-                    <div className="col-md-6 col-lg-4 fade-in-up">
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white hover-lift">
-                            <div className="feature-icon mb-3 fs-3">📂</div>
-                            <h3 className="h5 fw-bold mb-3">Smart Ingestion</h3>
-                            <p className="text-muted mb-0">
-                                We support PDF, DOCX, and Google Drive integration. Our system automatically cleans, chunks, and indexes your data, making it ready for AI retrieval in seconds.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4 fade-in-up" style={{ animationDelay: '0.1s' }}>
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white hover-lift">
-                            <div className="feature-icon mb-3 fs-3">🤖</div>
-                            <h3 className="h5 fw-bold mb-3">Context-Aware AI</h3>
-                            <p className="text-muted mb-0">
-                                Unlike generic chatbots, ours understands <i>your</i> business. It retrieves specific paragraphs from your documents to provide accurate, cited answers.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white">
-                            <div className="feature-icon mb-3 fs-3">🔒</div>
-                            <h3 className="h5 fw-bold mb-3">Enterprise-Grade Security</h3>
-                            <p className="text-muted mb-0">
-                                Your data never leaves your control. With strict Role-Based Access Control (RBAC) and Organization Isolation, sensitive information remains private.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white">
-                            <div className="feature-icon mb-3 fs-3">⚡</div>
-                            <h3 className="h5 fw-bold mb-3">Instant Synchronization</h3>
-                            <p className="text-muted mb-0">
-                                Update a policy document? The chatbot knows instantly. Soft-delete old files to keep your knowledge base fresh without losing history.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white">
-                            <div className="feature-icon mb-3 fs-3">📊</div>
-                            <h3 className="h5 fw-bold mb-3">Usage & Insights</h3>
-                            <p className="text-muted mb-0">
-                                Admins get full visibility. Track how many documents are indexed, monitor storage limits, and understand what your users are asking.
-                            </p>
-                        </div>
-                    </div>
-                    <div className="col-md-6 col-lg-4">
-                        <div className="feature-card h-100 p-4 border rounded-3 shadow-sm bg-white">
-                            <div className="feature-icon mb-3 fs-3">🚀</div>
-                            <h3 className="h5 fw-bold mb-3">Seamless Integration</h3>
-                            <p className="text-muted mb-0">
-                                Embed our intelligent chat widget on your public website, internal portal, or intranet with just one line of javascript.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* HOW IT WORKS */}
-                <div className="section-alt py-5 bg-light rounded-3 my-5">
-                    <div className="container">
-                        <h2 className="section-title text-center fw-bold mb-3">How It Works</h2>
-                        <p className="text-center text-muted mb-5">From raw files to intelligent answers in three simple steps.</p>
-
-                        <div className="row g-4 text-center">
-                            <div className="col-md-4">
-                                <div className="feature-card h-100 p-4 bg-white rounded-3 shadow-sm">
-                                    <div className="step-number mx-auto mb-3 fw-bold bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: 48, height: 48 }}>1</div>
-                                    <h3 className="h5 fw-bold mb-3">Upload Sources</h3>
-                                    <p className="text-muted mb-0">
-                                        Drag and drop your local files or connect your Google Drive folder.
-                                    </p>
-                                </div>
+                {!user && (
+                    <>
+                        {/* ---- FEATURE SPOTLIGHT 1 ---- */}
+                        <div id="features" className="row align-items-center py-5 my-5 reveal">
+                            <div className="col-lg-5 order-lg-2 mb-4 mb-lg-0">
+                                <h2 className="section-title">Impenetrable Data Vault</h2>
+                                <p className="text-muted mb-4" style={{ fontSize: '1.1rem' }}>
+                                    Our architecture is built on a foundation of zero-trust security. 
+                                    Your documents are encrypted at rest and in transit, ensuring that your proprietary knowledge remains strictly yours.
+                                </p>
+                                <ul className="list-unstyled d-flex flex-column gap-3 text-muted">
+                                    <li><i className="bi bi-check-circle-fill text-primary me-2"></i> SOC2 Type II Compliant Infrastructure</li>
+                                    <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Strict Tenant Isolation</li>
+                                    <li><i className="bi bi-check-circle-fill text-primary me-2"></i> Role-Based Access Controls (RBAC)</li>
+                                </ul>
                             </div>
-                            <div className="col-md-4">
-                                <div className="feature-card h-100 p-4 bg-white rounded-3 shadow-sm">
-                                    <div className="step-number mx-auto mb-3 fw-bold bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: 48, height: 48 }}>2</div>
-                                    <h3 className="h5 fw-bold mb-3">Processing</h3>
-                                    <p className="text-muted mb-0">
-                                        Our system reads, chunks, and vectorizes your text into a searchable semantic database.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="feature-card h-100 p-4 bg-white rounded-3 shadow-sm">
-                                    <div className="step-number mx-auto mb-3 fw-bold bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: 48, height: 48 }}>3</div>
-                                    <h3 className="h5 fw-bold mb-3">Ask & Answer</h3>
-                                    <p className="text-muted mb-0">
-                                        Users ask natural language questions and get instant, grounded responses.
-                                    </p>
+                            <div className="col-lg-7 order-lg-1 pe-lg-5">
+                                <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.15)', border: '1px solid var(--border)' }}>
+                                    <img 
+                                        src="/images/feature_vault.png" 
+                                        alt="Secure Vault" 
+                                        style={{ width: '100%', height: 'auto', display: 'block', backgroundColor: 'var(--bg-surface)', minHeight: '350px' }}
+                                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1000&q=80'; }}
+                                    />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* ROLES */}
-                <div className="py-5">
-                    <h2 className="section-title fw-bold mb-3">Designed for Every Role</h2>
-                    <p className="hero-subtitle lead text-muted mb-5">
-                        We prioritize accessibility and usability, ensuring every team member has the right tools.
-                    </p>
-
-                    <div className="row g-4">
-                        <div className="col-md-4">
-                            <div className="role-card h-100 p-4 border rounded-3 shadow-sm bg-white border-start border-4 border-primary">
-                                <h3 className="h5 fw-bold mb-3">👑 Admins <span className="badge rounded-pill bg-dark ms-2">Full Control</span></h3>
-                                <p className="text-muted mb-0">
-                                    Complete oversight of the platform. Manage users, billing, API keys, and audit logs. You hold the keys to the kingdom.
+                        {/* ---- SERVICES GRID ---- */}
+                        <div className="py-5 my-5">
+                            <div className="reveal text-center mb-5">
+                                <h2 className="section-title">Uncompromising Capabilities</h2>
+                                <p className="text-muted mx-auto" style={{ maxWidth: '600px' }}>
+                                    A platform designed for high-performance teams that demand accuracy, security, and absolute reliability.
                                 </p>
                             </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="role-card h-100 p-4 border rounded-3 shadow-sm bg-white border-start border-4 border-primary">
-                                <h3 className="h5 fw-bold mb-3">🛡️ Managers <span className="badge rounded-pill bg-info text-dark ms-2">Content Ops</span></h3>
-                                <p className="text-muted mb-0">
-                                    Focused on the knowledge. Upload, organize, and curate documents. Ensure the chatbot says the right things without worrying about billing.
-                                </p>
+                            <div className="row g-4">
+                                {services.map((s, i) => (
+                                    <div key={s.title} className="col-md-6 col-lg-4">
+                                        <div
+                                            className="glass-panel h-100 p-4 hover-lift reveal"
+                                            style={{ transitionDelay: `${i * 0.08}s` }}
+                                        >
+                                            <div className="feature-icon mb-4">
+                                                <i className={`bi ${s.icon}`}></i>
+                                            </div>
+                                            <h3 className="h5 fw-bold mb-3">{s.title}</h3>
+                                            <p className="text-muted mb-0" style={{ fontSize: '0.95rem' }}>{s.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                        <div className="col-md-4">
-                            <div className="role-card h-100 p-4 border rounded-3 shadow-sm bg-white border-start border-4 border-primary">
-                                <h3 className="h5 fw-bold mb-3">👤 Users <span className="badge rounded-pill bg-secondary ms-2">Consumption</span></h3>
-                                <p className="text-muted mb-0">
-                                    Reduced noise. Users can browse approved documents and use the chat interface to find answers quickly. Simple and effective.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                {me && (
-                    <ChatWidget org={me.org_slug || me.org_id} />
+                        {/* ---- HOW IT WORKS ---- */}
+                        <div className="glass-panel py-5 px-4 my-5" style={{ borderRadius: '24px' }}>
+                            <div className="reveal">
+                                <h2 className="section-title text-center mb-5">Streamlined Operational Flow</h2>
+                            </div>
+
+                            <div className="row g-4 text-center">
+                                {[
+                                    { step: 1, title: "Connect Sources", desc: "Integrate your existing data silos securely via our robust API or direct file upload." },
+                                    { step: 2, title: "Algorithmic Indexing", desc: "Our system parses, sanitizes, and vectors your documents into a high-dimensional database." },
+                                    { step: 3, title: "Deploy Intelligence", desc: "Integrate our chat widget and immediately begin extracting precise answers." },
+                                ].map(({ step, title, desc }, i) => (
+                                    <div key={step} className="col-md-4">
+                                        <div
+                                            className="p-4 reveal"
+                                            style={{ transitionDelay: `${i * 0.12}s` }}
+                                        >
+                                            <div className="step-number mb-4 shadow-sm">{step}</div>
+                                            <h3 className="h5 fw-bold mb-3">{title}</h3>
+                                            <p className="text-muted mb-0">{desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {user && (
+                    <ChatWidget org={user.org_slug || user.org_id} />
                 )}
             </div>
-        </>
+        </div>
     );
 }

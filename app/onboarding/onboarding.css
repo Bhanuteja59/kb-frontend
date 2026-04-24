@@ -1,0 +1,42 @@
+.onboarding-page {
+    background-color: var(--bg-page);
+}
+
+.onboarding-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 3rem;
+    box-shadow: var(--shadow-xl);
+}
+
+.onboarding-logo-wrapper {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.onboarding-input {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    color: #000;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.onboarding-input:focus {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}

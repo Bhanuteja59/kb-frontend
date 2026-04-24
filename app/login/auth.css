@@ -1,0 +1,60 @@
+.auth-page {
+    background-color: var(--bg-page);
+}
+
+.auth-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 3rem;
+    box-shadow: var(--shadow-xl);
+}
+
+.auth-logo-wrapper {
+    width: 64px;
+    height: 64px;
+    background: var(--primary);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(255, 107, 107, 0.2);
+}
+
+.auth-input {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.875rem 1.25rem;
+    color: #000;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+    background: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.1);
+}
+
+.google-btn {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0.875rem;
+    font-weight: 700;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.google-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}

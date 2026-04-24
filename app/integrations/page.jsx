@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../components/layout/Topbar";
 import { getMe } from "../lib/api";
+import "./integrations.css";
+
 
 export default function IntegrationsPage() {
     const [user, setUser] = useState(null);
@@ -77,10 +79,11 @@ export default function IntegrationsPage() {
     };
 
     return (
-        <>
+        <div className="light-page min-vh-100 d-flex flex-column">
             <Topbar />
-            <div className="container-fluid min-vh-100 text-white pb-5" style={{ background: 'radial-gradient(circle at 80% 10%, rgba(99, 102, 241, 0.1), transparent 60%)' }}>
-                <div className="container py-5 mt-4">
+            <div className="background-elements">
+            </div>
+            <div className="container py-5 position-relative z-index-1 mt-4">
 
                     {/* Hero Section */}
                     <div className="row justify-content-center mb-5 fade-in-up">
@@ -88,8 +91,8 @@ export default function IntegrationsPage() {
                             <div className="d-inline-flex align-items-center justify-content-center bg-gradient-primary rounded-circle mb-4 shadow-lg pulse-animation" style={{ width: 80, height: 80 }}>
                                 <i className="bi bi-grid-1x2-fill fs-1 text-white"></i>
                             </div>
-                            <h1 className="display-4 fw-bold text-white mb-3">Integration Hub</h1>
-                            <p className="lead text-white opacity-75">Connect your knowledge base to the tools you use every day.</p>
+                            <h1 className="display-4 fw-bold mb-3">Integration Hub</h1>
+                            <p className="lead text-muted fw-medium">Connect your knowledge base to the tools you use every day.</p>
                         </div>
                     </div>
 
@@ -97,21 +100,18 @@ export default function IntegrationsPage() {
                     <div className="row g-4">
                         {/* Featured: Web Widget */}
                         <div className="col-lg-8 fade-in-up" style={{ animationDelay: '0.1s' }}>
-                            <div className="glass-panel overflow-hidden border-primary border-opacity-25 position-relative card-shadow-lg">
-                                {/* Decorative Glow */}
-                                <div className="position-absolute top-0 end-0 bg-primary opacity-10 rounded-circle blur-3xl" style={{ width: '300px', height: '300px', transform: 'translate(30%, -30%)' }}></div>
-
+                            <div className="glass-panel overflow-hidden shadow-sm position-relative" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
                                 <div className="p-4 p-md-5 position-relative z-1">
                                     <div className="d-flex align-items-center gap-3 mb-5">
-                                        <div className="rounded-4 bg-primary bg-opacity-20 p-3 d-flex align-items-center justify-content-center border border-primary border-opacity-25">
+                                        <div className="rounded-4 bg-primary bg-opacity-10 p-3 d-flex align-items-center justify-content-center border border-primary border-opacity-25">
                                             <i className="bi bi-window-desktop fs-2 text-primary"></i>
                                         </div>
                                         <div>
-                                            <h3 className="fw-bold text-white mb-1">Web Chat Widget</h3>
-                                            <p className="text-white opacity-75 mb-0">Embed our AI concierge on your website in seconds.</p>
+                                            <h3 className="fw-bold mb-1">Web Chat Widget</h3>
+                                            <p className="text-muted mb-0 fw-medium">Embed our AI concierge on your website in seconds.</p>
                                         </div>
                                         <div className="ms-auto d-none d-md-block">
-                                            <span className="badge bg-success bg-opacity-25 text-warning border border-success border-opacity-25 rounded-pill px-4 py-2">
+                                            <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-4 py-2 fw-bold">
                                                 <i className="bi bi-check-circle-fill me-2"></i>Enabled
                                             </span>
                                         </div>
@@ -122,22 +122,22 @@ export default function IntegrationsPage() {
                                         <div className="d-flex justify-content-between align-items-end mb-3">
                                             <label className="text-primary small text-uppercase fw-bold letter-spacing-1">Installation Code</label>
                                             <button
-                                                className={`btn btn-md ${copied ? 'btn-success' : 'btn-glass'} rounded-pill px-4 transition-all text-warning border-warning`}
+                                                className={`btn btn-md ${copied ? 'btn-success' : 'btn-light border'} rounded-pill px-4 transition-all fw-bold shadow-sm`}
                                                 onClick={handleCopy}
                                             >
                                                 {copied ? <><i className="bi bi-check2 me-2"></i>Copied!</> : <><i className="bi bi-clipboard me-2"></i>Copy Snippet</>}
                                             </button>
                                         </div>
 
-                                        <div className="rounded-3 overflow-hidden bg-dark border border-secondary border-opacity-25 shadow-lg">
-                                            <div className="bg-dark-light px-3 py-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
+                                        <div className="rounded-3 overflow-hidden bg-dark shadow-lg border" style={{ borderColor: '#334155' }}>
+                                            <div className="bg-dark px-3 py-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2">
                                                 <div className="rounded-circle bg-danger" style={{ width: 10, height: 10 }}></div>
                                                 <div className="rounded-circle bg-warning" style={{ width: 10, height: 10 }}></div>
                                                 <div className="rounded-circle bg-success" style={{ width: 10, height: 10 }}></div>
-                                                <span className="ms-3 text-white opacity-25 small font-monospace">script.js</span>
+                                                <span className="ms-3 text-white opacity-25 small font-monospace">widget-install.html</span>
                                             </div>
-                                            <pre className="m-0 p-4 text-info font-monospace custom-scrollbar" style={{ textShadow: 'none', background: '#0d1117' }}>
-                                                <code>{embedCode}</code>
+                                            <pre className="m-0 p-4 text-info font-monospace custom-scrollbar" style={{ textShadow: 'none', background: '#0f172a', fontSize: '0.9rem' }}>
+                                                <code style={{ color: '#94a3b8' }}>{embedCode}</code>
                                             </pre>
                                         </div>
                                     </div>
@@ -146,28 +146,28 @@ export default function IntegrationsPage() {
                                     <div className="row g-4">
                                         <div className="col-md-4">
                                             <div className="d-flex gap-3">
-                                                <div className="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>1</div>
+                                                <div className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>1</div>
                                                 <div>
-                                                    <h6 className="text-white fw-bold mb-1">Copy Code</h6>
-                                                    <p className="text-white fw-medium small mb-0">Use the button above to copy the script.</p>
+                                                    <h6 className="fw-bold mb-1">Copy Code</h6>
+                                                    <p className="text-muted small mb-0 fw-medium">Use the button above to copy the script.</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="d-flex gap-3">
-                                                <div className="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>2</div>
+                                                <div className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>2</div>
                                                 <div>
-                                                    <h6 className="text-white fw-bold mb-1">Paste in HTML</h6>
-                                                    <p className="text-white fw-medium small mb-0">Insert before the closing <code className="text-warning fw-bold">&lt;/body&gt;</code> tag.</p>
+                                                    <h6 className="fw-bold mb-1">Paste in HTML</h6>
+                                                    <p className="text-muted small mb-0 fw-medium">Insert before the closing <code className="text-primary fw-bold">&lt;/body&gt;</code> tag.</p>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="d-flex gap-3">
-                                                <div className="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>3</div>
+                                                <div className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0" style={{ width: 32, height: 32 }}>3</div>
                                                 <div>
-                                                    <h6 className="text-white fw-bold mb-1">Publish</h6>
-                                                    <p className="text-white fw-medium small mb-0">Deploy your site. The widget appears instantly.</p>
+                                                    <h6 className="fw-bold mb-1">Publish</h6>
+                                                    <p className="text-muted small mb-0 fw-medium">Deploy your site. The widget appears instantly.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -178,41 +178,41 @@ export default function IntegrationsPage() {
 
                         {/* Sidebar / Other Integrations */}
                         <div className="col-lg-4" style={{ animationDelay: '0.2s' }}>
-                            <div className="d-flex flex-column gap-4 text-white">
+                            <div className="d-flex flex-column gap-4">
                                 <div className="fade-in-up">
-                                    <h5 className="text-white fw-bold mb-3 d-flex align-items-center gap-2">
-                                        <i className="bi bi-clock-history text-accent"></i> Coming Soon
+                                    <h5 className="fw-bold mb-3 d-flex align-items-center gap-2">
+                                        <i className="bi bi-clock-history text-primary"></i> Coming Soon
                                     </h5>
                                     <div className="d-flex flex-column gap-3">
-                                        <IntegrationCard
-                                            icon="bi-slack"
-                                            title="Slack"
-                                            desc="Answer questions directly in your team's channels."
-                                            upcoming={true}
-                                        />
-                                        <IntegrationCard
-                                            icon="bi-discord"
-                                            title="Discord"
-                                            desc="Community support bot with role-based access."
-                                            upcoming={true}
-                                        />
-                                        <IntegrationCard
-                                            icon="bi-microsoft-teams"
-                                            title="Microsoft Teams"
-                                            desc="Enterprise knowledge retrieval for Teams."
-                                            upcoming={true}
-                                        />
+                                        {[
+                                            { icon: "bi-slack", title: "Slack", desc: "Answer questions directly in Slack." },
+                                            { icon: "bi-discord", title: "Discord", desc: "Community support bot." },
+                                            { icon: "bi-microsoft-teams", title: "Teams", desc: "Enterprise retrieval for Teams." }
+                                        ].map((item, idx) => (
+                                            <div key={idx} className="glass-panel p-3 shadow-sm" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', opacity: 0.8 }}>
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div className="rounded-circle bg-light border d-flex align-items-center justify-content-center shadow-sm" style={{ width: 44, height: 44, flexShrink: 0 }}>
+                                                        <i className={`bi ${item.icon} fs-5 text-muted`}></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 className="fw-bold mb-0">{item.title}</h6>
+                                                        <p className="text-muted small mb-0 fw-medium">{item.desc}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Request Card */}
-                            <div className="glass-panel p-4 mt-4 fade-in-up border-0 bg-gradient-to-br from-primary to-purple">
+                            <div className="p-4 mt-4 fade-in-up border-0 shadow-lg text-white" style={{ background: 'var(--primary-gradient)', borderRadius: '20px' }}>
                                 <i className="bi bi-lightbulb fs-3 text-warning mb-3 d-block"></i>
-                                <h5 className="text-white fw-bold">Need a specific integration?</h5>
-                                <p className="text-white opacity-75 small">We are constantly adding new platforms. Let us know what you need.</p>
+                                <h5 className="fw-bold">Need a specific integration?</h5>
+                                <p className="opacity-90 small fw-medium">We are constantly adding new platforms. Let us know what you need.</p>
                                 <button
-                                    className="btn btn-sm btn-light rounded-pill w-100 text-primary fw-bold"
+                                    className="btn btn-md btn-white w-100 fw-bold mt-2 shadow-sm"
+                                    style={{ background: '#fff', color: 'var(--primary)', borderRadius: '12px' }}
                                     onClick={handleRequestIntegration}
                                 >
                                     Request Integration
@@ -220,58 +220,8 @@ export default function IntegrationsPage() {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <style jsx global>{`
-                .card-shadow-lg {
-                    box-shadow: 
-                        0 0 0 1px rgba(255, 255, 255, 0.05),
-                        0 20px 50px -12px rgba(0, 0, 0, 0.5), 
-                        0 10px 20px -10px rgba(0, 0, 0, 0.4);
-                }
-                .pulsing-border {
-                    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
-                    animation: pulse-border 2s infinite;
-                }
-                @keyframes pulse-border {
-                    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-                    70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-                }
-                .bg-gradient-primary {
-                    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-                }
-                .bg-dark-light {
-                    background: #1e293b;
-                }
-                .grayscale {
-                    filter: grayscale(1);
-                    opacity: 0.6;
-                }
-                .hover-lift:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 
-                        0 0 0 1px rgba(99, 102, 241, 0.3),
-                        0 20px 40px -10px rgba(0, 0, 0, 0.6),
-                        0 0 20px rgba(99, 102, 241, 0.2);
-                }
-                .transition-all {
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-                .fade-in-up {
-                    animation: fadeInUp 0.5s ease-out forwards;
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                @keyframes fadeInUp {
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-            `}</style>
+                    </div>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-        </>
+        </div>
     );
 }
