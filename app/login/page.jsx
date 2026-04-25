@@ -26,8 +26,8 @@ function LoginContent() {
     if (loading || isAuthenticated) return null;
 
     const errorMessage =
-        sessionExpired
-            ? "Your session has expired. Please sign in again."
+        sessionExpired || errorParam === "session_expired"
+            ? "Sign-in link expired. Please try again."
             : errorParam === "auth_failed"
             ? "Authentication failed. Please try again."
             : null;
