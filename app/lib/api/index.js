@@ -3,8 +3,8 @@
 // Client
 export { apiFetch } from "./client";
 
-// Auth  
-export { login, signup, getMe, completeOnboarding, updateProfile, updateOrganization, sendVerification, verifyOtp, forgotPassword, resetPassword, changePassword } from "./auth";
+// Auth
+export { getMe, completeOnboarding, updateProfile, updateOrganization } from "./auth";
 
 // Chat
 export { ragChat } from "./chat";
@@ -14,7 +14,5 @@ export {
     getDocuments,
     getDocument,
     uploadDocument,
-    uploadFromDrive,
     deleteDocument,
-    restoreDocument
 } from "./documents";

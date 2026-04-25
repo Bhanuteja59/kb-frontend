@@ -32,26 +32,19 @@ export async function uploadDocument(
     });
 
     if (!res.ok) {
-        throw new Error(await res.text());
+        let msg;
+        try {
+            const data = await res.json();
+            msg = data?.detail?.message || data?.detail || "Upload failed";
+        } catch {
+            msg = await res.text().catch(() => `Upload failed: ${res.status}`);
+        }
+        throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
     }
-
-    return res.json();
-}
-
-export async function uploadFromDrive(data) {
-    const res = await apiFetch("/ingest/drive", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
 
     return res.json();
 }
 
 export async function deleteDocument(docId) {
     await apiFetch(`/documents/${docId}`, { method: "DELETE" });
-}
-
-export async function restoreDocument(docId) {
-    await apiFetch(`/documents/${docId}/restore`, { method: "POST" });
 }
