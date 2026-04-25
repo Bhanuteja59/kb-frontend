@@ -136,13 +136,13 @@ function UploadContent() {
                                     <div className="fw-bold text-dark">Click to select a file</div>
                                     <div className="text-muted small fw-medium">or drag and drop here</div>
                                     <div className="d-flex gap-2 mt-3">
-                                        {["PDF", "DOCX"].map(ext => (
+                                        {["PDF", "DOCX"].map((ext) => (
                                             <span key={ext} className="badge bg-white text-muted border px-3 py-2 fw-bold" style={{ fontSize: '0.7rem' }}>{ext}</span>
                                         ))}
                                     </div>
                                 </div>
                             )}
-                            <input id="file-input" type="file" className="d-none" onChange={handleFileChange} accept=".pdf,.doc,.docx" />
+                            <input id="file-input" type="file" className="d-none" onChange={handleFileChange} accept=".pdf,.docx" />
                         </label>
 
                         {busy && (
